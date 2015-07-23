@@ -61,7 +61,7 @@
 [url "git://gist.github.com/"]
 	insteadOf = "gist:"
 [user]
-	name = Ben Swift
-	email = ben@benswift.me
+	name = Charles Martin
+	email = cpm@charlesmartin.com.au  
 [github]
-	user = benswift
+	user = cpmpercussion

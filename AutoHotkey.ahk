@@ -14,6 +14,6 @@
 ; try out these hotkeys, run AutoHotkey again, which will load this file.
 
 
-Capslock::Ctrl ; capslock to control
-LWin::LAlt     ; left command to alt
-LAlt::LWin     ; left alt to command (windows key)
+;Capslock::Ctrl ; capslock to control
+;LWin::LAlt     ; left command to alt
+;LAlt::LWin     ; left alt to command (windows key)

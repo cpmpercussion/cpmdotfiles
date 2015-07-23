@@ -2,8 +2,6 @@
 ;: charles martin's .emacs ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; dotfiles repo: https://github.com/benswift/.dotfiles
-
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;; processing mode ;;
@@ -328,7 +326,7 @@
 
 
 (defun powerline-charles-theme ()
-  "Ben's powerline theme, based on \\[powerline-default-theme]"
+  "Charles' powerline theme, based on \\[powerline-default-theme]"
   (interactive)
   (setq-default mode-line-format
                 '("%e"
@@ -1013,8 +1011,7 @@ Replaces default behaviour of `comment-dwim', when it inserts comment at the end
 ;;;;;;;;;;;;;;;;;;
 
 (require 'server)
-
-;; (setq server-name "ben")
+;; (setq server-name "charles")
 
 (unless (server-running-p)
   (server-start))

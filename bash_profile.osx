@@ -1,12 +1,12 @@
 # Exports
 
-export PATH="/Users/ben/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/X11/bin:/usr/texbin"
+export PATH="/Users/charles/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/X11/bin:/usr/texbin"
 
 export EDITOR="emacsclient --alternate-editor=emacs --no-wait"
 
 ## for debian packaging
-# export DEBEMAIL="ben@benswift.me"
-# export DEBFULLNAME="Ben Swift"
+# export DEBEMAIL="cpm@charlesmartin.com.au"
+# export DEBFULLNAME="Charles Martin"
 
 # python
 export PYTHONPATH=`brew --prefix`/lib/python2.7/site-packages
@@ -15,9 +15,8 @@ export PYTHONPATH=`brew --prefix`/lib/python2.7/site-packages
 export EXT_LLVM_DIR=~/Code/extempore/llvm-build
 
 # set up rbenv
-export RBENV_ROOT=/usr/local/var/rbenv
-
-eval "$(rbenv init -)"
+#export RBENV_ROOT=/usr/local/var/rbenv
+#eval "$(rbenv init -)"
 
 # List all files colorized in long format, including dot files
 alias la="ls -Gla"

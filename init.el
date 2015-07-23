@@ -269,12 +269,12 @@
                                                ,(make-char 'greek-iso8859-7 107))
                                nil)))))))
 
-;;;;;;;;;;;;;;;;;;;
-;; monokai theme ;;
-;;;;;;;;;;;;;;;;;;;
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; solarized-dark theme ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-to-list 'custom-theme-load-path "~/.emacs.d/emacs-color-theme-solarized/")
 (if (display-graphic-p)
-    (progn (load-theme 'solarized-dark t)
+    (progn (load-theme 'solarized t)
            (add-to-list 'default-frame-alist
                         '(background-mode . dark))
            (set-cursor-color "white")))

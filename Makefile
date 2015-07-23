@@ -13,6 +13,7 @@ osx:
 	mkdir -p ~/.emacs.d
 	ln -sf $(DOTFILES_DIR)/init.el ~/.emacs.d/
 	ln -sf $(DOTFILES_DIR)/snippets ~/.emacs.d/
+	ln -sf $(DOTFILES_DIR)/emacs-color-theme-solarized ~/.emacs.d/
 
 	ln -sf $(DOTFILES_DIR)/RProfile ~/.RProfile
 	mkdir -p ~/.lein

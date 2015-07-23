@@ -26,6 +26,7 @@
 	# Treat spaces before tabs, lines that are indented with 8 or more spaces, and all kinds of trailing whitespace as an error
 	whitespace = space-before-tab,trailing-space
 	autocrlf = input
+  editor = open
 
 [color]
 	# Use colors in Git commands that are capable of colored output when outputting to the terminal
@@ -43,6 +44,7 @@
 	added = yellow
 	changed = green
 	untracked = cyan
+
 [merge]
 	# Include summaries of merged commits in newly created merge commit messages
 	log = true
@@ -60,8 +62,31 @@
 	pushInsteadOf = "git://gist.github.com/"
 [url "git://gist.github.com/"]
 	insteadOf = "gist:"
+
 [user]
 	name = Charles Martin
-	email = cpm@charlesmartin.com.au  
+	email = cpm@charlesmartin.com.au
+
 [github]
 	user = cpmpercussion
+
+[credential]
+        helper = osxkeychain
+
+[filter "media"]
+        required = true
+        clean = git media clean %f
+        smudge = git media smudge %f
+
+[push]
+        default = simple
+
+[filter "hawser"]
+        clean = git hawser clean %f
+        smudge = git hawser smudge %f
+        required = true
+
+[filter "lfs"]
+        clean = git lfs clean %f
+        smudge = git lfs smudge %f
+        required = true

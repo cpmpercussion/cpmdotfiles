@@ -7,10 +7,21 @@ export EDITOR="emacsclient --alternate-editor=emacs --no-wait"
 # export DEBFULLNAME="Charles Martin"
 
 # python
-export PYTHONPATH=`brew --prefix`/lib/python2.7/site-packages
+#export PYTHONPATH=`brew --prefix`/lib/python2.7/site-packages
 
-# Extempore-patched LLVM directory
-export EXT_LLVM_DIR=~/Code/extempore/llvm-build
+# Path setting for homebrew python
+export PATH=/usr/local/share/python:${PATH}
+
+### Added by the Heroku Toolbelt
+export PATH="/usr/local/heroku/bin:$PATH"
+
+### Extempore stuff
+export EXT_LLVM_DIR="/usr/local/Cellar/extempore-llvm/3.4.1"
+
+### Bibtex
+export BIBINPUTS=~/Dropbox/writing/2013ComputerMusic.bib:$BIBINPUTS
+
+
 
 # set up rbenv
 #export RBENV_ROOT=/usr/local/var/rbenv
@@ -74,9 +85,6 @@ alias plistbuddy="/usr/libexec/PlistBuddy"
 # End:
 
 ## Dotfiles additions
-
-# Add `~/bin` to the `$PATH`
-export PATH="$HOME/bin:$PATH";
 
 # Load the shell dotfiles, and then some:
 # * ~/.path can be used to extend `$PATH`.

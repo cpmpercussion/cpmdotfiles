@@ -1,39 +1,14 @@
-;;; init.el --- Ben Swift's Emacs init file
+;;;;;;;;;;;;;;;;;;;;;;;;
+;: charles martin's .emacs ;;
+;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Copyright (C) 2008-2015 Ben Swift
+;; dotfiles repo: https://github.com/benswift/.dotfiles
 
-;; Permission is hereby granted, free of charge, to any person
-;; obtaining a copy of this software and associated documentation
-;; files (the "Software"), to deal in the Software without
-;; restriction, including without limitation the rights to use, copy,
-;; modify, merge, publish, distribute, sublicense, and/or sell copies
-;; of the Software, and to permit persons to whom the Software is
-;; furnished to do so, subject to the following conditions:
 
-;; The above copyright notice and this permission notice shall be
-;; included in all copies or substantial portions of the Software.
+;;;;;;;;;;;;;;;;;;;;;
+;; processing mode ;;
+;;;;;;;;;;;;;;;;;;;;;
 
-;; THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-;; EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-;; MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-;; NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
-;; BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-;; ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-;; CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-;; SOFTWARE.
-
-;; Author: Ben Swift <ben@benswift.me>
-;; Homepage: https://github.com/benswift/.dotfiles
-
-;; This file is not part of GNU Emacs.
-
-;;; Commentary:
-
-;; My emacs init file - an ever-growing bag of tricks and hacks. Where
-;; I've stolen code from emacswiki, stackoverflow and other places,
-;; I've tried to acknowledge it.
-
-;;; Code:
 
 ;;;;;;;;;;
 ;; elpa ;;
@@ -42,8 +17,8 @@
 (require 'package)
 (setq package-archives
       '(("gnu" . "http://elpa.gnu.org/packages/")
-        ("melpa" . "http://melpa.milkbox.net/packages/")
-        ("elpy" . "http://jorgenschaefer.github.io/packages/")))
+        ("marmalade" . "http://marmalade-repo.org/packages/")
+        ("melpa" . "http://melpa.milkbox.net/packages/")))
 
 (unless package--initialized
   (package-initialize))
@@ -51,101 +26,61 @@
 (when (null package-archive-contents)
   (package-refresh-contents))
 
-(setq ben-package-list
-      '(ace-jump-mode
-        ag
-        async
-        bbdb
-        auctex
-        auto-complete
-        cider
-        cmake-mode
-        clojure-snippets
-        company
-        dash-at-point
-        dockerfile-mode
-        xcscope
-        elpy
-        erc-hl-nicks
-        erc-terminal-notifier
-        ess
-        exec-path-from-shell
-        fasm-mode
-        flatui-theme
-        flx-ido
-        flycheck
-        ggtags
-        gist
-        glsl-mode
-        htmlize
-        ido-ubiquitous
-        imenu-anywhere
-        isearch+
-        less-css-mode
-        jedi
-        magit
-        markdown-mode
-        malinka
-        monokai-theme
-        multiple-cursors
-        ;; nrepl-ritz ;; shadows cider-mode
-        osc
-        org
-        paradox
-        persistent-scratch
-        projectile
-        rainbow-delimiters
-        rtags
-        sane-term
-        s
-        scss-mode
-        smartparens
-        smart-mode-line
-        smex
-        string-utils
-        unidecode
-        vagrant
-        vagrant-tramp
-        vimrc-mode
-        wgrep
-        wgrep-ag
-        workgroups2
-        yaml-mode
-        yasnippet
-        zoom-frm))
-
-(dolist (package ben-package-list)
+(dolist (package
+         '(ac-nrepl
+           ag
+           auctex
+           auto-complete
+           bookmark+
+           cider
+           elpy
+           epl
+           ess
+           exec-path-from-shell
+           flx-ido
+           gist
+           htmlize
+           ido-ubiquitous
+           imenu-anywhere
+           isearch+
+           less-css-mode
+           magit
+           markdown-mode
+           monokai-theme
+           multiple-cursors
+           ;; nrepl-ritz ;; shadows cider-mode
+           org
+           paredit
+           powerline
+           scss-mode
+           smex
+           yaml-mode
+           yasnippet))
   (if (not (package-installed-p package))
       (package-install package)))
 
-;; paradox (souped up package.el)
-
-(setq paradox-execute-asynchronously t)
+(global-set-key (kbd "C-c p") 'list-packages)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; cross-platform setup ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun ben-set-default-faces (face-height)
-  (set-face-attribute 'default nil :height face-height :family "Source Code Pro")
-  (set-face-attribute 'variable-pitch nil :height face-height :family "Source Sans Pro"))
+(exec-path-from-shell-initialize)
+(exec-path-from-shell-copy-envs '("EDITOR" "EXT_LLVM_DIR" "LD_LIBRARY_PATH"))
 
 ;; linux
 
-(defun ben-linux-setup ()
-  (ben-set-default-faces 140)
+(defun charles-linux-setup ()
+  (setq base-face-height 140)
   (setq frame-maximization-mode 'maximized)
-  (ben-setup-keybindings)
-  ;; exec-path-from-shell is set up on OSX as well
-  (exec-path-from-shell-initialize)
-  (exec-path-from-shell-copy-envs '("EDITOR" "EXT_LLVM_DIR" "LD_LIBRARY_PATH" "PYTHONPATH")))
+  (charles-setup-keybindings))
 
 ;; OSX
 
 (defun spotlight-locate-make-command-line (search-string)
   (list "mdfind" "-interpret" search-string))
 
-(defun ben-setup-keybindings ()
+(defun charles-setup-keybindings ()
   (define-key global-map (kbd "s-a") 'mark-whole-buffer)
   (define-key global-map (kbd "s-k") 'kill-this-buffer)
   (define-key global-map (kbd "s-l") 'goto-line)
@@ -158,33 +93,30 @@
   (define-key global-map (kbd "s-w") 'delete-frame)
   (define-key global-map (kbd "s-x") 'kill-region))
 
-(defun ben-osx-setup ()
-  (ben-set-default-faces 140)
+(defun charles-osx-setup ()
+  (setq base-face-height 160)
   (setq mac-option-modifier 'meta)
 	(setq mac-command-modifier 'super)
   (setq helm-locate-command "mdfind -name %s %s")
   (setq locate-make-command-line 'spotlight-locate-make-command-line)
   (setq x-bitmap-file-path '("/usr/X11/include/X11/bitmaps"))
-  (setq source-directory "/Library/Caches/Homebrew/emacs-mac--git")
+  (setq source-directory "/Library/Caches/Homebrew/emacs--git")
   (setq dired-guess-shell-alist-user '(("\\.pdf\\'" "open")))
   (setq frame-maximization-mode 'fullscreen)
   ;; for railwaycat emacs-mac
-  (ben-setup-keybindings)
-  ;; exec-path-from-shell is set up on linux as well
-  (exec-path-from-shell-initialize)
-  (exec-path-from-shell-copy-envs '("EDITOR" "EXT_LLVM_DIR" "LD_LIBRARY_PATH" "PYTHONPATH")))
+  (charles-setup-keybindings))
 
 ;; Windows
 
-(defun ben-windows-setup ()
-  (ben-set-default-faces 160)
+(defun charles-windows-setup ()
+  (setq base-face-height 160)
   (setq w32-pass-lwindow-to-system nil)
   (setq w32-lwindow-modifier 'super)
-  (ben-setup-keybindings))
+  (charles-setup-keybindings))
 
-(cond ((equal system-type 'gnu/linux) (ben-linux-setup))
-      ((equal system-type 'darwin) (ben-osx-setup))
-      ((equal system-type 'windows-nt) (ben-windows-setup)))
+(cond ((equal system-type 'gnu/linux) (charles-linux-setup))
+      ((equal system-type 'darwin) (charles-osx-setup))
+      ((equal system-type 'windows-nt) (charles-windows-setup)))
 
 ;;;;;;;;;;;;;;;;;;;
 ;; customisation ;;
@@ -217,7 +149,6 @@
 
 (global-set-key (kbd "M-x") 'smex)
 (global-set-key (kbd "C-c i") 'imenu-anywhere)
-(global-set-key (kbd "C-c o") 'occur)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; garbage collection ;;
@@ -248,39 +179,8 @@
 (set-default 'imenu-auto-rescan t)
 
 (show-paren-mode 1)
-
 (column-number-mode 1)
 (hl-line-mode t)
-
-;; from http://www.emacswiki.org/emacs/ToggleWindowSplit
-(defun window-toggle-split-direction ()
-  "Switch window split from horizontally to vertically, or vice versa.
-
-i.e. change right window to bottom, or change bottom window to right."
-  (interactive)
-  (require 'windmove)
-  (let ((done))
-    (dolist (dirs '((right . down) (down . right)))
-      (unless done
-        (let* ((win (selected-window))
-               (nextdir (car dirs))
-               (neighbour-dir (cdr dirs))
-               (next-win (windmove-find-other-window nextdir win))
-               (neighbour1 (windmove-find-other-window neighbour-dir win))
-               (neighbour2 (if next-win (with-selected-window next-win
-                                          (windmove-find-other-window neighbour-dir next-win)))))
-          ;;(message "win: %s\nnext-win: %s\nneighbour1: %s\nneighbour2:%s" win next-win neighbour1 neighbour2)
-          (setq done (and (eq neighbour1 neighbour2)
-                          (not (eq (minibuffer-window) next-win))))
-          (if done
-              (let* ((other-buf (window-buffer next-win)))
-                (delete-window next-win)
-                (if (eq nextdir 'right)
-                    (split-window-vertically)
-                  (split-window-horizontally))
-                (set-window-buffer (windmove-find-other-window neighbour-dir) other-buf))))))))
-
-(global-set-key (kbd "C-c y") 'window-toggle-split-direction)
 
 ;; show time and battery status in mode line
 
@@ -308,28 +208,14 @@ i.e. change right window to bottom, or change bottom window to right."
 (add-hook 'text-mode-hook 'turn-on-flyspell)
 (remove-hook 'text-mode-hook 'smart-spacing-mode)
 
-;; file visiting
+;; file visiting stuff
 
-(setq save-place t
-      save-place-file (concat user-emacs-directory "places")
-      recentf-max-saved-items 100)
-
-;; file backups
-
-(setq backup-by-copying t
-      backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
-      delete-old-versions t
-      kept-new-versions 6
-      kept-old-versions 2
-      version-control t)
+(setq save-place t)
+(setq save-place-file (concat user-emacs-directory "places"))
+(setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups"))))
+(setq recentf-max-saved-items 100)
 
 (global-auto-revert-mode t)
-
-;; uniquify
-
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'post-forward
-      uniquify-separator ":")
 
 ;; other niceties
 
@@ -351,12 +237,27 @@ i.e. change right window to bottom, or change bottom window to right."
 
 (global-set-key (kbd "C-c t") 'set-current-frame-alpha)
 
-(define-key global-map (kbd "C-s-f") 'toggle-frame-fullscreen)
+;; fullscreen
+
+(defcustom frame-maximization-mode 'maximized
+  "The maximization style of \\[toggle-frame-maximized]."
+  :type '(choice
+          (const :tab "Respect window manager screen decorations." maximized)
+          (const :tab "Ignore window manager screen decorations." fullscreen))
+  :group 'frames)
+
+(defun toggle-frame-maximized ()
+  "Maximize/un-maximize Emacs frame according to `frame-maximization-mode'."
+  (interactive)
+  (modify-frame-parameters
+   nil `((fullscreen . ,(if (frame-parameter nil 'fullscreen)
+                            nil frame-maximization-mode)))))
+
+(define-key global-map (kbd "<f11>") 'toggle-frame-maximized)
 
 ;; hide certain minor modes from mode line
 
-(setq eldoc-minor-mode-string nil)
-(setq eldoc-argument-case 'downcase)
+(setq eldoc-minor-mode-string "")
 
 ;; pretty lambdas
 
@@ -368,34 +269,33 @@ i.e. change right window to bottom, or change bottom window to right."
                                                ,(make-char 'greek-iso8859-7 107))
                                nil)))))))
 
-;;;;;;;;;;;;;;;;;
-;; color theme ;;
-;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;
+;; monokai theme ;;
+;;;;;;;;;;;;;;;;;;;
 
-(let ((theme 'monokai))
-  (if (display-graphic-p)
-      (case theme
-        ('monokai (load-theme 'monokai t)
-                  (add-to-list 'default-frame-alist
-                               '(background-mode . dark))
-                  (set-cursor-color "white"))
-        ;; flatui
-        ('flatui  (load-theme 'flatui t)
-                  (add-to-list 'default-frame-alist
-                               '(background-mode . light))))))
+(if (display-graphic-p)
+    (progn (load-theme 'solarized-dark t)
+           (add-to-list 'default-frame-alist
+                        '(background-mode . dark))
+           (set-cursor-color "white")))
+
+;;;;;;;;;;;
+;; faces ;;
+;;;;;;;;;;;
+
+(set-face-attribute 'default nil :height base-face-height :family "Inconsolata")
+(set-face-attribute 'variable-pitch nil :height base-face-height :family "Lucida Grande")
 
 ;;;;;;;;;;;;;;;;;
 ;; keybindings ;;
 ;;;;;;;;;;;;;;;;;
 
-;; always use reindent-then-newline-and-indent
-
-(global-set-key (kbd "RET") 'reindent-then-newline-and-indent)
-
 ;; handy shortcuts
 
+(global-set-key (kbd "<f5>") 'magit-status)
+(global-set-key (kbd "<f6>") 'compile)
 (global-set-key (kbd "C-c g") 'ag)
-(global-set-key (kbd "C-c u") 'ag-dired)
+(global-set-key (kbd "C-c u") 'find-dired)
 
 ;; window navigation
 
@@ -417,282 +317,69 @@ i.e. change right window to bottom, or change bottom window to right."
 (global-set-key (kbd "<M-backspace>") 'backward-kill-word)
 (global-set-key (kbd "<s-backspace>") (lambda () (interactive) (kill-visual-line 0)))
 
-;;;;;;;;;;;;;;
-;; zoom-frm ;;
-;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;
+;; powerline ;;
+;;;;;;;;;;;;;;;
 
-(require 'zoom-frm)
+(require 'powerline)
 
-(global-set-key (kbd "C-x C-+") 'zoom-in/out)
-(global-set-key (kbd "C-x C--") 'zoom-in/out)
-(global-set-key (kbd "C-x C-=") 'zoom-in/out)
-(global-set-key (kbd "C-x C-0") 'zoom-in/out)
+(setq powerline-default-separator 'slant)
+(setq powerline-height 30)
 
-;;;;;;;;;;;;;;;;;
-;; workgroups2 ;;
-;;;;;;;;;;;;;;;;;
 
-;; (workgroups-mode 1)
+(defun powerline-charles-theme ()
+  "Ben's powerline theme, based on \\[powerline-default-theme]"
+  (interactive)
+  (setq-default mode-line-format
+                '("%e"
+                  (:eval
+                   (let* ((active (powerline-selected-window-active))
+                          (mode-line (if active 'mode-line 'mode-line-inactive))
+                          (face1 (if active 'powerline-active1 'powerline-inactive1))
+                          (face2 (if active 'powerline-active2 'powerline-inactive2))
+                          (separator-left (intern (format "powerline-%s-%s"
+                                                          powerline-default-separator
+                                                          (car powerline-default-separator-dir))))
+                          (separator-right (intern (format "powerline-%s-%s"
+                                                           powerline-default-separator
+                                                           (cdr powerline-default-separator-dir))))
+                          (lhs (list (powerline-raw "%*" nil 'l)
+                                     (powerline-buffer-id nil 'l)
+                                     (when (and (boundp 'which-func-mode) which-func-mode)
+                                       (powerline-raw which-func-format nil 'l))
+                                     (powerline-raw " ")
+                                     (funcall separator-left mode-line face1)
+                                     (when (boundp 'erc-modified-channels-object)
+                                       (powerline-raw erc-modified-channels-object face1 'l))
+                                     (powerline-major-mode face1 'l)
+                                     (powerline-process face1)
+                                     (powerline-minor-modes face1 'l)
+                                     (powerline-narrow face1 'l)
+                                     (powerline-raw " " face1)
+                                     (funcall separator-left face1 face2)))
+                          (rhs (list (powerline-raw global-mode-string face2 'r)
+                                     (funcall separator-right face2 face1)
+                                     (powerline-raw "%4l" face1 'l)
+                                     (powerline-raw ":" face1 'l)
+                                     (powerline-raw "%3c" face1 'r)
+                                     (funcall separator-right face1 mode-line)
+                                     (powerline-raw " ")
+                                     (powerline-raw "%6p" nil 'r)
+                                     (powerline-hud face2 face1))))
+                     (concat (powerline-render lhs)
+                             (powerline-fill face2 (powerline-width rhs))
+                             (powerline-render rhs)))))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;
-;; persistent-scratch ;;
-;;;;;;;;;;;;;;;;;;;;;;;;
-
-(persistent-scratch-setup-default)
-
-;;;;;;;;;;;;;;;;
-;; mu (email) ;;
-;;;;;;;;;;;;;;;;
-
-;; on OSX, currently using brew --HEAD option.  to update, use
-;; (shell-command "brew rm mu && brew install --HEAD --with-emacs mu --ignore-dependencies")
-
-;; only set this up when mu4e is installed
-(if (require 'mu4e nil :noerror)
-    (progn
-      (require 'smtpmail)
-
-      ;; smtp
-      (setq message-send-mail-function 'smtpmail-send-it
-            smtpmail-starttls-credentials
-            '(("mail.messagingengine.com" 587 nil nil))
-            smtpmail-default-smtp-server "mail.messagingengine.com"
-            smtpmail-smtp-server "mail.messagingengine.com"
-            smtpmail-smtp-service 587
-            smtpmail-debug-info t)
-
-      (global-set-key (kbd "C-c m") 'mu4e)
-
-      (setq mu4e-maildir (expand-file-name "~/Maildir/fastmail"))
-      (setq smtpmail-queue-dir (expand-file-name "~/Desktop/queued-mail"))
-
-      (setq mu4e-sent-folder   "/Sent Items")
-      (setq mu4e-refile-folder "/Archive")
-      (setq mu4e-drafts-folder "/Drafts")
-      (setq mu4e-trash-folder  "/Trash")
-
-      (setq mu4e-attachment-dir  "~/Downloads")
-
-      ;; get mail
-      (setq mu4e-get-mail-command "timelimit -t 240 -T 270 mbsync fastmail"
-            mu4e-update-interval 300
-            mu4e-headers-auto-update t
-            mu4e-compose-signature-auto-include nil
-            mu4e-change-filenames-when-moving t
-            mu4e-view-show-addresses t)
-
-      ;; html email handling
-      (require 'mu4e-contrib)
-      (setq mu4e-html2text-command #'mu4e-shr2text)
-      ;; make sure fg-bg contrast is high enough
-      (setq shr-color-visible-luminance-min 80)
-
-      (setq mu4e-maildir-shortcuts
-            '(("/INBOX"      . ?i)
-              ("/Sent Items" . ?s)
-              ("/Archive"    . ?a)
-              ("/Drafts"     . ?d)
-              ("/Trash"      . ?t)
-              ("/Spam"       . ?j)))
-
-      ;; headers view
-      (setq mu4e-headers-date-format "%e %b %y"
-            mu4e-headers-fields '((:human-date . 12)
-                                  (:flags . 6)
-                                  (:maildir . 10)
-                                  (:from . 22)
-                                  (:subject)))
-
-      ;; bookmarks
-      (add-to-list 'mu4e-bookmarks
-                   '("list:extemporelang.googlegroups.com" "Extempore list" ?e) t)
-      (add-to-list 'mu4e-bookmarks
-                   '("from:Henry Gardner" "Hballs" ?h) t)
-      (add-to-list 'mu4e-bookmarks
-                   '("to:benjamin.j.swift@gmail.com" "to gmail" ?g) t)
-
-      ;; actions
-      (add-to-list 'mu4e-view-actions
-                   '("bView in browser" . mu4e-action-view-in-browser) t)
-
-      ;; fancy graphics
-      (setq mu4e-show-images t
-            mu4e-use-fancy-chars nil)
-
-      ;; use imagemagick, if available
-      (when (fboundp 'imagemagick-register-types)
-        (imagemagick-register-types))
-
-      ;; general emacs mail settings; used when composing e-mail
-      ;; the non-mu4e-* stuff is inherited from emacs/message-mode
-      (setq mu4e-reply-to-address "ben@benswift.me"
-            user-mail-address     "ben@benswift.me"
-            user-full-name        "Ben Swift")
-      (setq mu4e-user-mail-address-list
-            '("ben@benswift.me"
-              "benjamin.j.swift@gmail.com"
-              "ben.swift@anu.edu.au"))
-      (setq mu4e-compose-dont-reply-to-self t)
-
-      ;; mailing lists
-      (setq mu4e-user-mailing-lists
-            '(("extemporelang.googlegroups.com" . "Extempore")
-              ("livecode.group.lurk.org"        . "TOPLAP")
-              ("acma-l.list.waikato.ac.nz"      . "ACMA")))
-
-      (defun ben-mu4e-compose-insert-template ()
-        (let ((msg mu4e-compose-parent-message)
-              (bomp (+ (progn (goto-char (point-min))
-                              (search-forward mail-header-separator))
-                       1)))
-          (goto-char bomp)
-          (if msg ;; reply or forward (use "(string= user-mail-address (cdar (mu4e-msg-field msg :from)))" to test for forward)
-              (progn
-                (insert
-                 (cond
-                  ((mu4e-message-contact-field-matches
-                    msg :from "\\(joyli90@gmail.com\\|joy.y.swift@gmail.com\\|joy.swift@abs.gov.au\\)")
-                   "Hi Bunny\n\n\n\nLove,\nBun\n")
-                  ((mu4e-message-contact-field-matches
-                    msg :from "walknuts@gmail.com")
-                   "Hi Dad\n\n\n\nLove,\nBen\n")
-                  (t (format "Hi %s\n\n\n\nCheers,\nBen\n"
-                             (car (split-string (or (caar (mu4e-msg-field msg :from)) "mate")))))))
-                (if (mu4e-message-contact-field-matches
-                     msg :to "benjamin.j.swift@gmail.com")
-                    (insert "\nP.S. I'm getting rid of this gmail address soon, my new address is ben@benswift.me\n"))
-                (goto-char bomp)
-                (forward-line 2))
-            (progn ;; compose new
-              (goto-char bomp)
-              (insert "Hi mate\n\n\n\nCheers,\nBen\n")
-              (goto-char (point-min))
-              (forward-line)
-              (move-end-of-line 1)))))
-
-      (defun ben-asciify-buffer-or-region (beg end)
-        (interactive "r")
-        (let ((asciify-alist '(("’" . "'")
-                               ("‘" . "'")
-                               ("“" . "\"")
-                               ("”" . "\""))))
-          (unless (region-active-p)
-            (setq beg (point-min))
-            (setq end (point-max)))
-          (save-excursion
-            (-each asciify-alist
-              (lambda (nonascii-char-pair)
-                (goto-char beg)
-                (while (search-forward (car nonascii-char-pair) end :noerror)
-                  (replace-match (cdr nonascii-char-pair) nil :literal)))))))
-
-      ;; spell check
-      (add-hook 'mu4e-compose-mode-hook
-                (defun ben-mu4e-compose-mode-hook ()
-                  "My settings for message composition."
-                  (ben-asciify-buffer-or-region (point-min) (point-max))
-                  (flyspell-mode 1)
-                  (ben-mu4e-compose-insert-template)))
-
-      ;; for using dired to specify attachments
-      (require 'gnus-dired)
-      ;; make the `gnus-dired-mail-buffers' function also work on
-      ;; message-mode derived modes, such as mu4e-compose-mode
-      (defun gnus-dired-mail-buffers ()
-        "Return a list of active message buffers."
-        (let (buffers)
-          (save-current-buffer
-            (dolist (buffer (buffer-list t))
-              (set-buffer buffer)
-              (when (and (derived-mode-p 'message-mode)
-                         (null message-sent-message-via))
-                (push (buffer-name buffer) buffers))))
-          (nreverse buffers)))
-
-      (setq gnus-dired-mail-mode 'mu4e-user-agent)
-      (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
-
-      )) ;; end "(if (require 'mu4e nil :noerror) ..."
-
-;;;;;;;;;;;;;;;;;;;;;
-;; smart mode line ;;
-;;;;;;;;;;;;;;;;;;;;;
-
-(sml/setup)
-
-(setq sml/name-width (cons 10 40))
-
-(setq rm-blacklist
-      (regexp-opt '("SP/s"
-                    "MRev"
-                    "Projectile"
-                    "Fly"
-                    "Ref"
-                    "Fill")))
-
-;;;;;;;;;;;;;;;;;;;
-;; ace-jump-mode ;;
-;;;;;;;;;;;;;;;;;;;
-
-(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
-
-(autoload
-  'ace-jump-mode-pop-mark
-  "ace-jump-mode"
-  "Ace jump back:-)"
-  t)
-(eval-after-load "ace-jump-mode"
-  '(ace-jump-mode-enable-mark-sync))
-(define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
-
-;;;;;;;;;;;;;
-;; company ;;
-;;;;;;;;;;;;;
-
-(add-hook 'after-init-hook 'global-company-mode)
-
-;;;;;;;;;;;
-;; rtags ;;
-;;;;;;;;;;;
-
-;; (rtags-enable-standard-keybindings)
-
-;;;;;;;;;;;;;
-;; malinka ;;
-;;;;;;;;;;;;;
-
-;; (require 'malinka)
-
-;; (setq malinka-completion-system 'ido)
-
-;; (add-hook 'c-mode-common-hook 'malinka-mode)
-
-;; (malinka-define-project
-;;  :name "Extempore"
-;;  :root-directory "~/Code/extempore"
-;;  :build-directory "~/Code/extempore"
-;;  ;; :cpp-defines '("TARGET_OS_MAC" "USE_GLUT")
-;;  :compiler-flags '("-Wall" "-g")
-;;  :configure-cmd ""
-;;  :compile-cmd "./all.bash"
-;;  :test-cmd "./test-all.sh")
-
-;;;;;;;;;;
-;; dash ;;
-;;;;;;;;;;
-
-(global-set-key (kbd "C-c d") 'dash-at-point)
-
-(add-to-list 'dash-at-point-mode-alist
-             '(cmake-mode . "cmake"))
+(powerline-charles-theme)
 
 ;;;;;;;;;;;;
 ;; eshell ;;
 ;;;;;;;;;;;;
 
-(global-set-key (kbd "C-c e") 'eshell)
+(setq eshell-aliases-file "~/.dotfiles/eshell-alias")
+(global-set-key (kbd "C-c s") 'eshell)
 
-(defun ben-eshell-mode-hook ()
+(defun charles-eshell-mode-hook ()
   ;; config vars
   (setq eshell-cmpl-cycle-completions nil)
   (setq eshell-save-history-on-exit t)
@@ -705,6 +392,9 @@ i.e. change right window to bottom, or change bottom window to right."
   (define-key eshell-mode-map (kbd "<C-down>") 'eshell-next-matching-input-from-input)
   (define-key eshell-mode-map (kbd "<up>") 'previous-line)
   (define-key eshell-mode-map (kbd "<down>") 'next-line)
+  ;;faces
+  (monokai-with-color-variables
+    (set-face-attribute 'eshell-prompt nil :foreground monokai-orange))
   ;; prompt helpers
   (setq eshell-directory-name (concat user-emacs-directory "eshell/"))
   (setq eshell-prompt-regexp "^[^@]*@[^ ]* [^ ]* [$#] ")
@@ -721,7 +411,7 @@ i.e. change right window to bottom, or change bottom window to right."
                '("tar" "\\(\\.tar|\\.tgz\\|\\.tar\\.gz\\)\\'"))
   (add-to-list 'eshell-visual-commands "ssh"))
 
-(add-hook 'eshell-mode-hook 'ben-eshell-mode-hook)
+(add-hook 'eshell-mode-hook 'charles-eshell-mode-hook)
 
 (defun base-name (path)
   "Returns the base name of the given path."
@@ -753,30 +443,29 @@ i.e. change right window to bottom, or change bottom window to right."
 (setq dired-listing-switches "-alh")
 (setq dired-auto-revert-buffer t)
 
-;;;;;;;;;;;;;;;;
-;; type-break ;;
-;;;;;;;;;;;;;;;;
-
-;; (type-break-mode 1)
-
-;;;;;;;;;;;;;
-;; ibuffer ;;
-;;;;;;;;;;;;;
-
-(global-set-key (kbd "C-x C-b") 'ibuffer)
-
 ;;;;;;;;;;;
 ;; magit ;;
 ;;;;;;;;;;;
 
 (setq vc-display-status nil)
-(global-set-key (kbd "<f5>") 'magit-status)
+(setq magit-save-some-buffers nil)
 
 ;;;;;;;;;;;;;
 ;; cc-mode ;;
 ;;;;;;;;;;;;;
 
 ;; (setq c-default-style "k&r")
+
+;;;;;;;;;;;;;
+;; ebrowse ;;
+;;;;;;;;;;;;;
+
+(defun charles-ebrowse-set-faces ()
+  (set-face-attribute 'ebrowse-root-class nil :foreground nil :inherit font-lock-type-face)
+  (set-face-attribute 'ebrowse-member-class nil :foreground nil :inherit font-lock-function-name-face)
+  (set-face-attribute 'ebrowse-member-attribute nil :foreground nil :inherit font-lock-string-face))
+
+(add-hook 'ebrowse-tree-mode 'charles-ebrowse-set-faces)
 
 ;;;;;;;;;;;;;;
 ;; org mode ;;
@@ -787,7 +476,7 @@ i.e. change right window to bottom, or change bottom window to right."
 (setq org-completion-use-ido t)
 (setq org-export-with-toc nil)
 
-(defun ben-org-mode-hook ()
+(defun charles-org-mode-hook ()
   ;; ;; org-latex export
   ;; (add-to-list 'org-export-latex-classes
   ;;              '("scrartcl"
@@ -809,131 +498,82 @@ i.e. change right window to bottom, or change bottom window to right."
   (define-key org-mode-map (kbd "<C-S-right>") nil)
   (define-key org-mode-map (kbd "<C-S-left>") nil))
 
-(add-hook 'org-mode-hook 'ben-org-mode-hook)
+(add-hook 'org-mode-hook 'charles-org-mode-hook)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Ben is On the Tubes ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (setq org-format-latex-header
+;;       "\\documentclass[12pt,a4paper]{scrartcl}
+;; \\usepackage{libertineotf}
+;; \\usepackage{fontspec}
+;; \\setmonofont[Scale=MatchLowercase,Mapping=tex-text]{Source Code Pro}
 
-;; need to use the command `org-html-htmlize-generate-css' to extract
-;; class definitions
-(setq org-html-htmlize-output-type 'inline-css)
+;; \\usepackage{booktabs}
+;; \\usepackage{tabularx}
+;; \\renewcommand{\\arraystretch}{1.2}
 
-;; (setq org-html-htmlize-font-prefix "")
+;; % biblatex
 
-(setq org-html-footnotes-section
-      "<div id=\"footnotes\">
-<h2>%s </h2>
-<div id=\"text-footnotes\">
-%s
-</div>
-</div>")
-(setq org-html-footnote-format "[%s] ")
-(setq org-html-footnote-separator "")
-(setq org-publish-project-alist
-      '(("biott-posts"
-         :base-directory "~/Documents/biott/"
-         :base-extension "org"
-         :exclude "draft-posts/*"
-         :publishing-directory "~/Code/clojure/benswift.me/resources/"
-         :recursive t
-         :publishing-function org-html-publish-to-html
-         :headline-levels 4
-         :html-extension "html"
-         :body-only t
-         :html-head-include-default-style nil
-         :section-numbers nil
-         :html-link-home "/"
-         :html-link-use-abs-url t)
-        ("biott-images"
-         :base-directory "~/Documents/biott/public/img/"
-         :base-extension "png\\|jpg\\|pdf"
-         :publishing-directory "~/Code/clojure/benswift.me/resources/public/img/"
-         :recursive t
-         :publishing-function org-publish-attachment)
-        ("biott" :components ("biott-posts" "biott-images"))))
+;; \\usepackage[%
+;; backend=biber,
+;; natbib=true,
+;; backref=true,
+;; citecounter=true,
+;; dashed=false,
+;; backrefstyle=three,
+;; citestyle=authoryear-icomp,
+;; firstinits=true,
+;; maxcitenames=2,
+;; maxbibnames=10,
+;; uniquename=mininit,
+;; bibstyle=authoryear,
+;; % refsegment=chapter,
+;; % ibidtracker=strict,
+;; url=false,
+;; doi=false]{biblatex}
 
-(setq org-export-html-mathjax-options
-      '((path "http://orgmode.org/mathjax/MathJax.js")
-        (scale "100")
-        (align "center")
-        (indent "2em")
-        (mathml t)))
+;; % to use year-only bib format
+;; \\AtEveryBibitem{\\clearfield{month}}
+;; \\AtEveryCitekey{\\clearfield{month}}
 
+;; % specify the bib file here
+;; \\addbibresource{papers.bib}
 
-(require 'url-util) ; needed for url-unerserved-chars
+;; % IMPORTANT: to actually print the bibliography in the document,
+;; % insert the command: \\printbibliography[title=References]
 
-(defun biott-sanitise-post-name (post-name)
-  (apply #'string (reverse (cl-reduce (lambda (processed char)
-                                      (if (member char url-unreserved-chars)
-                                          (cons char processed)
-                                        (if (and processed
-                                                 (= (first processed) ?-))
-                                            processed
-                                          (cons ?- processed))))
-                                      (string-to-list post-name)
-                    :initial-value '()))))
+;; % csquotes
 
-(defun biott-new-post (post-name)
-  (interactive "sPost title: ")
-  (let ((post-url-basename
-         (concat (format-time-string "%Y-%m-%d-")
-                 (downcase (biott-sanitise-post-name post-name)))))
-    (find-file (concat "~/Documents/biott/posts/"
-                       post-url-basename
-                       ".org"))
-    (insert (format
-             "#+PROPERTY: header-args:extempore :tangle /tmp/%s.xtm
-#+begin_html
----
-title: %s
-alias: [\"./%s.html\"]
-tags:
----
-#+end_html
-"
-             post-url-basename post-name post-url-basename))))
+;; \\usepackage[english=british,threshold=15,thresholdtype=words]{csquotes}
+;; \\SetCiteCommand{\\parencite}
 
-(defun biott-push-to-gh-pages ()
-  (interactive)
-  (let ((default-directory "~/Code/clojure/benswift.me/"))
-    (async-shell-command "./gh-pages-deploy.sh")))
+;; \\newenvironment*{smallquote}
+;;   {\\quote\\small}
+;;   {\\endquote}
+;; \\SetBlockEnvironment{smallquote}
 
-;;;;;;;;;;;;;;
-;; hunspell ;;
-;;;;;;;;;;;;;;
+;; % hyperref & bookmark
 
-;; (require 'ispell)
+;; \\usepackage[svgnames,hyperref]{xcolor}
 
-;; (setq ispell-program-name "/usr/local/bin/hunspell")
-;; (setq ispell-dictionary "en_AU")
-;; (add-to-list 'ispell-dictionary-alist
-;;              '("en_AU" "[[:alpha:]]" "[^[:alpha:]]" "" t ("-d" "/Library/Spelling/en_AU") nil iso-8859-1))
+;; \\usepackage[%
+;; unicode=true,
+;; hyperindex=true,
+;; bookmarks=true,
+;; colorlinks=true, % change to false for final
+;; pdfborder=0,
+;; allcolors=DarkBlue,
+;; % plainpages=false,
+;; pdfpagelabels,
+;; hyperfootnotes=true]{hyperref}
 
-;; (setq rw-hunspell-dicpath-list '("/Library/Spelling"))
-
-;;;;;;;;;;;;;;;;
-;; projectile ;;
-;;;;;;;;;;;;;;;;
-
-(projectile-global-mode)
-
-(global-set-key (kbd "<f6>") 'projectile-compile-project)
-
+;; ")
 
 ;;;;;;;;;
 ;; erc ;;
 ;;;;;;;;;
 
-(if (load "~/.dotfiles/secrets/ercpass" t)
-    (progn
-      (erc-services-mode 1)
-      (setq erc-nick "benswift")
-      (setq erc-prompt-for-password nil)
-      (setq erc-prompt-for-nickserv-password nil)
-      (setq erc-autojoin-channels-alist '(("freenode.net" "#extempore")))
-      (setq erc-notify-list '("digego")))
-  (message "Couldn't find the secrets file, you need to pull it down from dropbox."))
+(erc-services-mode 1)
+(setq erc-nick "charlesmatarles")
+(setq erc-autojoin-channels-alist '(("freenode.net" "#extempore")))
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; LaTeX & reftex ;;
@@ -942,7 +582,7 @@ tags:
 (require 'latex)
 (require 'reftex)
 
-(defun ben-latex-mode-hook ()
+(defun charles-latex-mode-hook ()
   (setq TeX-master t)
   (setq TeX-PDF-mode t)
   (setq TeX-auto-untabify t)
@@ -950,10 +590,8 @@ tags:
   (setq TeX-auto-save t)
   (add-to-list 'auto-mode-alist '("\\.cls" . LaTeX-mode))
   ;; use Skim for pdfs on OSX
-  (add-to-list 'TeX-view-program-list
-               '("Skim" "~/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b"))
-  (if (equal system-type 'darwin)
-      (add-to-list 'TeX-view-program-selection '(output-pdf "Skim")))
+  ;; Program to view pdfs
+
   ;; synctex
   (setq TeX-source-correlate-mode t)
   (setq TeX-source-correlate-method 'synctex)
@@ -965,12 +603,13 @@ tags:
   (setq reftex-plug-into-AUCTeX t)
   (setq reftex-cite-prompt-optional-args nil)
   (setq reftex-cite-cleanup-optional-args t)
-  (setq reftex-bibliography-commands '("bibliography" "nobibliography" "setupbibtex\\[.*?database=" "addbibresource"))
-  (reftex-mode 1)
   ;; reftex keybindings
   (define-key LaTeX-mode-map (kbd "C-c =") 'reftex-toc)
   (define-key LaTeX-mode-map (kbd "C-c c") 'reftex-citation)
   (define-key LaTeX-mode-map (kbd "C-c r") 'reftex-reference))
+  ;; So that RefTeX finds my bibliography
+  (setq reftex-default-bibliography '("~/Dropbox/writing/2013ComputerMusic.bib"))
+  '(reftex-use-external-file-finders t)
 
 (defun latex-word-count ()
   (interactive)
@@ -988,86 +627,40 @@ tags:
               (call-process "texcount" nil t nil "-1" "-merge" enc-opt tex-file)))))
     (message word-count)))
 
-(add-hook 'LaTeX-mode-hook 'ben-latex-mode-hook)
-
-;; to clean Biber cache, use
-;; (shell-command "echo rm -r `biber --cache`")
-
-;; for minted
-
-;; (eval-after-load "tex"
-;;   '(setcdr (assoc "LaTeX" TeX-command-list)
-;;           '("%`%l%(mode) -shell-escape%' %t"
-;;           TeX-run-TeX nil (latex-mode doctex-mode) :help "Run LaTeX")))
+(add-hook 'LaTeX-mode-hook 'charles-latex-mode-hook)
 
 ;;;;;;;;;;;;;;;
 ;; extempore ;;
 ;;;;;;;;;;;;;;;
 
+(setq user-extempore-directory "/usr/local/Cellar/extempore/0.52/")
+(autoload 'extempore-mode (concat user-extempore-directory "extras/extempore.el") "" t)
+(add-to-list 'auto-mode-alist '("\\.xtm$" . extempore-mode))
+
 ;; extempore customisation
 (setq extempore-tab-completion nil)
 
-;; device-specific Extempore config
-(cond
- ((string= system-name "lonyx")
-  (setq extempore-program-args "--device 0 --frames 1024")
-  (setq user-extempore-directory "/home/ben/Code/extempore/")
-  (setq user-extempore-lib-directory "/home/ben/Code/xtm/lib/"))
- ((string= system-name "debian-vm")
-  (setq extempore-program-args "--device 1 --frames 1024")
-  (setq user-extempore-directory "/home/ben/Code/extempore/")
-  (setq user-extempore-lib-directory "/home/ben/Code/xtm/lib/"))
- ((or (string= system-name "hodgey.local")
-      (string= system-name "hodgey.lan")
-      t) ;; probably running on hodgey
-  (setq extempore-program-args nil)
-  ;; (setq extempore-program-args "--device 1 --frames 1024")
-  (setq user-extempore-directory "/Users/ben/Code/extempore/")
-  (setq user-extempore-lib-directory "/Users/ben/Code/xtm/lib/")))
-
-(autoload 'extempore-mode (concat user-extempore-directory "extras/extempore.el") nil t)
-(autoload 'extempore-run (concat user-extempore-directory "extras/extempore.el") nil t)
-(autoload 'extempore-repl (concat user-extempore-directory "extras/extempore.el") nil t)
-(add-to-list 'auto-mode-alist '("\\.xtm$" . extempore-mode))
-(add-to-list 'dash-at-point-mode-alist '(extempore-mode . "gl4,gl3,gl2,c,c++,osx"))
-
-(defun ben-extempore-mode-hook ()
+(defun charles-extempore-mode-hook ()
   (turn-on-eldoc-mode)
   (setq eldoc-documentation-function
         'extempore-eldoc-documentation-function)
+  (yas-minor-mode-on)
   ;; (if (and (not extempore-logger-mode)
   ;;          (yes-or-no-p "Do you want to log this session?"))
   ;;     (extempore-logger-mode 1))
-  (yas-minor-mode-on)
-  ;; monokai-bg is #272822 (monokai 20140109.2253)
-  (set-face-attribute 'extempore-blink-face nil :foreground "#272822" :background "#FD971F")
-  (set-face-attribute 'extempore-sb-blink-face nil :foreground "#272822" :background "#39FF14"))
+  )
 
-(add-hook 'extempore-mode-hook 'ben-extempore-mode-hook)
-
-;; more extempore-related goodies
+(add-hook 'extempore-mode-hook 'charles-extempore-mode-hook)
 
 (autoload #'llvm-mode (concat user-extempore-directory "extras/llvm-mode.el")
   "Major mode for editing LLVM IR files" t)
 
-;; to pull down the lldb-aware gud.el
-;; (async-shell-command (format "curl -o %sextras/gud-lldb.el http://www.opensource.apple.com/source/lldb/lldb-69/utils/emacs/gud.el?txt" user-extempore-directory))
-
-(autoload #'lldb (concat user-extempore-directory "extras/gud-lldb.el")
-  "A version of gud.el which supports debugging in LLDB." t)
-
 (add-to-list 'auto-mode-alist '("\\.ir$" . llvm-mode))
 (add-to-list 'auto-mode-alist '("\\.ll$" . llvm-mode))
 
-;; lldb-GUD integration
+;; session setup
 
-(defun ben-lldb-mode-hook ()
-  (if (string-match "^.*-extempore.*\\*$" (buffer-name))
-      (setq extempore-buffer (buffer-name))))
-
-(add-hook 'lldb-mode-hook 'ben-lldb-mode-hook)
-
-(defun extempore-create-template-file (base-path filename &optional header)
+(defun charles-create-extempore-template-file (base-path filename &optional header)
   (let ((full-path (format "%s/%s" base-path filename)))
     (unless (file-exists-p full-path)
       (progn
@@ -1076,214 +669,133 @@ tags:
         (save-buffer)
         (kill-buffer)))))
 
-(defun extempore-create-template (name)
+(defun charles-create-extempore-template-dir (name)
   "Set up the directory structure and files for a new extempore session/gig."
   (interactive "sSession name: ")
   (let* ((xtm-dir (expand-file-name "~/Code/xtm/"))
          (base-path (concat xtm-dir "sessions/" name))
          (setup-header
           (concat ";;; setup.xtm --- setup file for " name "\n"
-                  "(sys:load \"" xtm-dir "lib/benlib-scm.xtm\")\n"
-                  "(ipc:load \"utility\" \"" xtm-dir "lib/benlib-scm.xtm\")\n\n"
-                  "dspmt")))
+                  "(sys:load \"libs/xtm.xtm\")\n"
+                  "(sys:load \"" xtm-dir "lib/charles-lib.xtm\")\n"
+                  "(ipc:load \"utility\" \"" xtm-dir "lib/charles-lib.xtm\")\n"
+                  "(sys:load \"" xtm-dir "lib/sampler-maps.xtm\")\n"
+                  "(ipc:load \"utility\" \"" xtm-dir "lib/sampler-maps.xtm\")\n")))
     (if (file-exists-p base-path)
         (error "Cannot create xtm session: directory already exists."))
     (make-directory base-path)
     ;; practice files
-    (extempore-create-template-file
+    (charles-create-extempore-template-file
      base-path "prac-utility.xtm" "headeru")
-    (extempore-create-template-file
+    (charles-create-extempore-template-file
      base-path "prac-primary.xtm" "headerp")
     ;; gig files
-    (extempore-create-template-file
+    (charles-create-extempore-template-file
      base-path "gig-utility.xtm" "headeru")
-    (extempore-create-template-file
+    (charles-create-extempore-template-file
      base-path "gig-primary.xtm" "headerp")
     ;; setup file
-    (extempore-create-template-file
+    (charles-create-extempore-template-file
      base-path "setup.xtm" setup-header)
     (dired base-path)))
 
-;; yasnippet helpers
+;;;;;;;;;;;;;
+;; paredit ;;
+;;;;;;;;;;;;;
 
+;; from https://gist.github.com/malk/4962126
 
-;; used in extempore-mode's print-line-debug snippet
-(defun extempore-yas-println-debug-expander (pl-str format-str)
-  (if (not (string= pl-str ""))
-      (mapconcat (lambda (name) (format format-str name name))
-                 (cl-remove-if (lambda (x) (or (string-match "^'.*:$" x)
-                                          (string-match "^\".*:\"$" x)))
-                               (split-string pl-str " "))
-                 " ")
-    pl-str))
+(defun point-is-inside-list ()
+  "Whether point is currently inside list or not."
+  (nth 1 (syntax-ppss)))
 
-(defvar extempore-yas-oscillator-list '("osc" "square" "triangle" "rect" "saw" "pulse" "fade" "delay" "delay_t" "comb" "flanger" "chorus" "tap_delay" "allpass" "reverb" "reverb2" "hold" "svf" "lpf" "lpf2" "bpf" "hpf" "notch" "peak" "lshelf" "hshelf" "skf" "lpfbq" "hpfbq" "bpfbq" "notchbq" "vcf" "hann" "hann_t" "linear"))
+(defun point-is-inside-string ()
+  "Whether point is currently inside string or not."
+  (nth 3 (syntax-ppss)))
 
-(defun extempore-yas-get-sample-map-list ()
-  (if (boundp 'user-extempore-lib-directory)
-      (with-temp-buffer (insert-file-contents (concat user-extempore-lib-directory "sampler-maps.xtm"))
-                        (goto-char (point-min))
-                        (cl-labels ((sm-parse-fn (sm-list)
-                                                 (if (re-search-forward "(define \\(*sm-[^ \n]*\\)" nil :no-error)
-                                                     (funcall #'sm-parse-fn (cons (match-string-no-properties 1) sm-list))
-                                                   sm-list)))
-                          (sm-parse-fn nil)))
-    '("")))
+(defun point-is-inside-comment ()
+  "Whether point is currently inside a comment or not."
+  (nth 4 (syntax-ppss)))
 
-(defun extempore-yas-get-chord-sym (maj-min)
-  ;; symbol lists from libs/core/pc_ivl.xtm
-  (mapcar #'symbol-name
-          (case maj-min
-            ('^ 5 '(i i6 i64 i7 i- i-7 n n6 ii ii6 ii7 ii9 ii^ ii^7 iii iii6 iii7 iii^ iii^7 iv iv6 iv7 iv- iv-7 v v6 v7 v- v-7 vi vi6 vi7 vi^ vi^7 viio viio7 vii vii7))
-            ('- '(i i6 i64 i7 i^ i^6 i^64 i^7 n n6 ii ii6 ii7 ii- ii-6 ii-7 ii^ ii^7 iii iii6 iii7 iii- iii-6 iii-7 iv iv6 iv7 iv^ iv^6 iv^7 v v^ v6 v7 v- v-6 v-6 v-7 vi vi6 vi7 vi- vi-6 vi-7 vii vii6 vii7 viio viio6 viio7))
-            (t nil))))
+(defun paredit--is-at-opening-paren ()
+  (and (looking-at "\\s(")
+       (not (point-is-inside-string))
+       (not (point-is-inside-comment))))
 
-;; (let ((extempore-snippet-dir
-;;        "/Users/ben/.dotfiles/snippets/extempore-mode"))
-;;   (dolist (name extempore-yas-oscillator-list)
-;;     (with-temp-buffer
-;;       (insert (format "# -*- mode: snippet -*-
-;; # name: %s
-;; # key: %screate
-;; # --
-;; " name name))
-;;       (insert (format "(%s_mc_c ${1:nchan} ${2:})" name))
-;;       (write-region (point-min)
-;;                     (point-max)
-;;                     (format "%s/%s-create"
-;;                             extempore-snippet-dir
-;;                             name)))
-;;     (with-temp-buffer
-;;       (insert (format "# -*- mode: snippet -*-
-;; # name: %s
-;; # key: %scall
-;; # --
-;; " name name))
-;;       (insert (format "(%s ${1:chan} ${2:})" name))
-;;       (write-region (point-min)
-;;                     (point-max)
-;;                     (format "%s/%s-call"
-;;                             extempore-snippet-dir
-;;                             name)))))
+(defun paredit-skip-to-start-of-sexp-at-point ()
+  "Skips to start of current sexp."
+  (interactive)
+  (while (not (paredit--is-at-opening-paren))
+    (if (point-is-inside-string)
+        (paredit-backward-up)
+      (paredit-backward))))
 
-;; (let* ((snippet-dir "/Users/ben/.dotfiles/snippets/extempore-mode/")
-;;        (snippets (directory-files snippet-dir)))
-;;   (dolist (filename snippets)
-;;     (if (string-match "\\(-create\\)" filename)
-;;         (with-current-buffer (find-file (format "%s%s"
-;;                                                 snippet-dir
-;;                                                 filename))
-;;           (while (re-search-forward "# name: .*$" nil t)
-;;             (replace-match (concat (match-string 0) "-create") t nil))
-;;           (save-buffer)))))
+(defun paredit-duplicate-rest-of-closest-sexp ()
+  (interactive)
+  (cond
+   ((paredit--is-at-opening-paren)
+    (paredit-copy-sexps-as-kill)
+    (forward-sexp)
+    (paredit-newline)
+    (yank)
+    (exchange-point-and-mark))
+   ((point-is-inside-list)
+    (while (looking-at " ") (forward-char))
+    (if (not (= (point) (car (bounds-of-thing-at-point 'sexp))))
+        (progn (forward-sexp)
+               (while (looking-at " ") (forward-char))))
+    (let ((sexp-inside-end (- (paredit-next-up/down-point 1 1) 1)))
+      (kill-ring-save (point) sexp-inside-end)
+      (goto-char sexp-inside-end))
+    (paredit-newline)
+    (yank)
+    (exchange-point-and-mark))))
 
-;;;;;;;;;;;;
-;; OpenCL ;;
-;;;;;;;;;;;;
+(defface paredit-paren-face
+  '((((class color) (background dark))
+     (:foreground "grey50"))
+    (((class color) (background light))
+     (:foreground "grey55")))
+  "Face for parentheses.  Taken from ESK.")
 
-;; hopefully this will be added to MELPA at some stage, then we can
-;; just blow it away.
+(defun charles-paredit-mode-hook ()
+  (define-key paredit-mode-map (kbd "<M-delete>") 'paredit-forward-kill-word)
+  (define-key paredit-mode-map (kbd "<M-backspace>") 'paredit-backward-kill-word)
+  (define-key paredit-mode-map (kbd "<s-left>") 'paredit-backward-up)
+  (define-key paredit-mode-map (kbd "<s-S-left>") 'paredit-backward-down)
+  (define-key paredit-mode-map (kbd "<s-right>") 'paredit-forward-up)
+  (define-key paredit-mode-map (kbd "<s-S-right>") 'paredit-forward-down)
+  (define-key paredit-mode-map (kbd "<M-S-up>") 'paredit-raise-sexp)
+  (define-key paredit-mode-map (kbd "<M-S-down>") 'paredit-wrap-sexp)
+  (define-key paredit-mode-map (kbd "<M-S-left>") 'paredit-convolute-sexp)
+  (define-key paredit-mode-map (kbd "<M-S-right>") 'transpose-sexps)
+  (define-key paredit-mode-map (kbd "<s-S-down>") 'paredit-duplicate-rest-of-closest-sexp))
 
-(add-to-list 'load-path (concat user-emacs-directory "opencl-mode-emacs/"))
-(require 'opencl-mode nil :noerror)
-(add-to-list 'auto-mode-alist '("\\.cl\\'" . opencl-mode))
+(add-hook 'paredit-mode-hook 'charles-paredit-mode-hook)
 
-;;;;;;;;;;;;;;;;;
-;; smartparens ;;
-;;;;;;;;;;;;;;;;;
+;; turn on paredit by default in all 'lispy' modes
 
-(require 'smartparens)
-(require 'smartparens-config)
+(dolist (mode '(scheme emacs-lisp lisp clojure cider-repl clojurescript extempore))
+  (when (> (display-color-cells) 8)
+    (font-lock-add-keywords (intern (concat (symbol-name mode) "-mode"))
+                            '(("(\\|)" . 'paredit-paren-face))))
+  (add-hook (intern (concat (symbol-name mode) "-mode-hook"))
+            'paredit-mode))
 
-(add-to-list 'sp-ignore-modes-list 'org-mode)
-(add-to-list 'sp-ignore-modes-list 'shell-mode)
+;; taken from
+;; http://emacsredux.com/blog/2013/04/18/evaluate-emacs-lisp-in-the-minibuffer/
 
-(setq sp-highlight-wrap-tag-overlay nil
-      sp-highlight-wrap-overlay nil
-      sp-highlight-pair-overlay nil
-      sp-hybrid-kill-excessive-whitespace t)
+(defun conditionally-enable-paredit-mode ()
+  "Enable `paredit-mode' in the minibuffer, during `eval-expression'."
+  (if (eq this-command 'eval-expression)
+      (paredit-mode 1)))
 
-(defun ben-smartparens-mode-hook ()
-  (define-key sp-keymap (kbd "M-<down>") 'sp-splice-sexp-killing-forward)
-  (define-key sp-keymap (kbd "M-<up>") 'sp-splice-sexp-killing-backward)
-  (define-key sp-keymap (kbd "s-<left>") 'sp-backward-up-sexp)
-  (define-key sp-keymap (kbd "s-<right>") 'sp-up-sexp)
-  (define-key sp-keymap (kbd "s-S-<left>") 'sp-backward-down-sexp)
-  (define-key sp-keymap (kbd "s-S-<right>") 'sp-down-sexp)
-  (define-key sp-keymap (kbd "C-<left>") 'sp-forward-barf-sexp)
-  (define-key sp-keymap (kbd "C-<right>") 'sp-forward-slurp-sexp)
-  (define-key sp-keymap (kbd "M-S-<up>") 'sp-splice-sexp-killing-around)
-  (define-key sp-keymap (kbd "M-S-<left>") 'sp-convolute-sexp)
-  (define-key sp-keymap (kbd "M-S-<right>") 'sp-transpose-sexp)
-  (define-key sp-keymap (kbd "s-S-<down>") 'sp-duplicate-next-sexp)
-  (define-key sp-keymap (kbd "M-S-<down>") 'sp-wrap-with-paren)
-  (add-to-list 'sp--lisp-modes 'extempore-mode))
+(add-hook 'minibuffer-setup-hook 'conditionally-enable-paredit-mode)
 
-(add-hook 'smartparens-enabled-hook 'ben-smartparens-mode-hook)
-
-(defun sp-wrap-with-paren (&optional arg)
-  (interactive "p")
-  (sp-select-next-thing-exchange arg)
-  (execute-kbd-macro (kbd "(")))
-
-(defun sp-duplicate-next-sexp (&optional arg)
-  (interactive "p")
-  (sp-select-next-thing arg)
-  (kill-ring-save (mark) (point))
-  (reindent-then-newline-and-indent)
-  (yank)
-  (sp-backward-sexp))
-
-(defun sp-reindent-defun (&optional argument)
-  "Reindent the definition that the point is on.
-
-If the point is in a string or a comment, fill the paragraph
-instead, and with a prefix argument, justify as well."
-  (interactive "P")
-  (if (or (sp-point-in-string)
-          (sp-point-in-comment))
-      (lisp-fill-paragraph argument)
-    (save-excursion
-      (end-of-defun)
-      (beginning-of-defun)
-      (indent-sexp))))
-
-(define-key lisp-mode-shared-map (kbd "M-q") 'sp-reindent-defun)
-
-(smartparens-global-mode 1)
-(smartparens-global-strict-mode 1)
-
-;; make the quote (') character work right in lisp modes
-;; taken from https://github.com/Fuco1/smartparens/issues/286
-(defun sp--org-skip-markup (ms mb me)
-  (save-excursion
-    (and (progn
-           (goto-char mb)
-           (save-match-data (looking-back "\\sw\\|\\s_\\|\\s.")))
-         (progn
-           (goto-char me)
-           (save-match-data (looking-at "\\sw\\|\\s_\\|\\s."))))))
-
-(sp-with-modes sp--lisp-modes
-  ;; disable ', it's the quote character!
-  (sp-local-pair "'" nil :actions nil)
-  ;; also only use the pseudo-quote inside strings where it serve as
-  ;; hyperlink.
-  (sp-local-pair "`" "'" :when '(sp-in-string-p sp-in-comment-p))
-  (sp-local-pair "`" nil
-                 :skip-match (lambda (ms mb me)
-                               (cond
-                                ((equal ms "'")
-                                 (or (sp--org-skip-markup ms mb me)
-                                     (not (sp-point-in-string-or-comment))))
-                                (t (not (sp-point-in-string-or-comment)))))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;
-;; rainwow-delimiters ;;
-;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; enable in prog modes only
-(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+(eval-after-load "paredit"
+  '(cl-nsubstitute-if '(paredit-mode " pe")
+                      (lambda (x) (equalp (car x) 'paredit-mode))
+                      minor-mode-alist))
 
 ;;;;;;;;;;;;;
 ;; clojure ;;
@@ -1291,13 +803,11 @@ instead, and with a prefix argument, justify as well."
 
 ;; cider
 
-(setq nrepl-hide-special-buffers t)
-(setq cider-auto-select-error-buffer nil)
-(setq cider-repl-use-pretty-printing nil)
-(setq cider-repl-use-clojure-font-lock t)
+;; (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
 
-;; for debugging
-(setq nrepl-log-messages t)
+(setq nrepl-hide-special-buffers t)
+(setq cider-auto-select-error-buffer t)
+(setq cider-repl-use-pretty-printing nil)
 
 ;;;;;;;;;;;;;;
 ;; markdown ;;
@@ -1306,12 +816,12 @@ instead, and with a prefix argument, justify as well."
 (add-to-list 'auto-mode-alist '("\\.md" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.markdown" . markdown-mode))
 
-(defun ben-markdown-mode-hook ()
+(defun charles-markdown-mode-hook ()
   ;; unset these keys in markdown-mode-map
   (define-key markdown-mode-map (kbd "<M-left>") nil)
   (define-key markdown-mode-map (kbd "<M-right>") nil))
 
-(add-hook 'markdown-mode-hook 'ben-markdown-mode-hook)
+(add-hook 'markdown-mode-hook 'charles-markdown-mode-hook)
 
 ;;;;;;;;;;
 ;; yaml ;;
@@ -1326,13 +836,6 @@ instead, and with a prefix argument, justify as well."
 (add-to-list 'auto-mode-alist '(".*gitconfig$" . conf-unix-mode))
 (add-to-list 'auto-mode-alist '(".*gitignore$" . conf-unix-mode))
 
-;;;;;;;;;;;;;
-;; systemd ;;
-;;;;;;;;;;;;;
-
-(add-to-list 'auto-mode-alist '("\\.service$" . conf-unix-mode))
-(add-to-list 'auto-mode-alist '("\\.socket$" . conf-unix-mode))
-
 ;;;;;;;
 ;; R ;;
 ;;;;;;;
@@ -1342,49 +845,29 @@ instead, and with a prefix argument, justify as well."
 (add-to-list 'auto-mode-alist '("\\.r$" . R-mode))
 (add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
 
-(defun ben-ess-R-post-run-hook ()
-  (smartparens-mode t)
-  (set (make-local-variable 'sp-hybrid-kill-excessive-whitespace) nil))
-
-(add-hook 'ess-R-post-run-hook 'ben-ess-R-post-run-hook)
-
-;;;;;;;;;;;
-;; julia ;;
-;;;;;;;;;;;
-
-(require 'ess-julia)
-(setq inferior-julia-program-name "julia")
-
-;;;;;;;;;;;;;;
-;; flycheck ;;
-;;;;;;;;;;;;;;
-
-(setq flycheck-completion-system 'ido)
-
-(add-hook 'after-init-hook #'global-flycheck-mode)
-
 ;;;;;;;;;;;;
 ;; Python ;;
 ;;;;;;;;;;;;
 
-(setq python-indent-offset 2)
+(require 'python)
+(setq python-shell-interpreter "ipython")
+(setq python-shell-interpreter-args "--pylab")
+
+;; jedi setup
+
+(add-hook 'python-mode-hook 'jedi:setup)
 
 ;; elpy setup
 
-(elpy-enable)
-(elpy-use-ipython)
+;; (elpy-enable)
+;; (setq elpy-rpc-backend 'jedi)
+;; (setq python-indent-offset 2)
 
-;; (setq elpy-rpc-backend "jedi")
-
-(setq  elpy-default-minor-modes
-       '(eldoc-mode
-         flycheck-mode
-         highlight-indentation-mode
-         auto-complete-mode))
-
-;; scons
-
-(add-to-list 'auto-mode-alist '("SConstruct" . python-mode))
+;; (setq  elpy-default-minor-modes
+;;        '(eldoc-mode
+;;          flymake-mode
+;;          ;; highlight-indentation-mode
+;;          auto-complete-mode))
 
 ;;;;;;;;;;;;;;;
 ;; yasnippet ;;
@@ -1393,8 +876,14 @@ instead, and with a prefix argument, justify as well."
 (require 'yasnippet)
 
 (setq yas-prompt-functions '(yas-ido-prompt yas-no-prompt))
-(setq yas-triggers-in-field t)
+
+(add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets")
 (yas-global-mode 1)
+
+(eval-after-load "yasnippet"
+  '(cl-nsubstitute-if '(yas-minor-mode "")
+                      (lambda (x) (equalp (car x) 'yas-minor-mode))
+                      minor-mode-alist))
 
 ;;;;;;;;;;;;;;;;;;
 ;; autocomplete ;;
@@ -1402,12 +891,17 @@ instead, and with a prefix argument, justify as well."
 
 ;; autocomplete needs to be set up after yasnippet
 
-;; (require 'auto-complete-config)
+(require 'auto-complete-config)
 
-;; ;; (ac-set-trigger-key "<tab>")
-;; (add-to-list 'ac-dictionary-directories (concat user-emacs-directory ".ac-dict"))
-;; (setq ac-auto-start 2)
-;; (ac-config-default)
+;; (ac-set-trigger-key "<tab>")
+(add-to-list 'ac-dictionary-directories (concat user-emacs-directory ".ac-dict"))
+(setq ac-auto-start 2)
+(ac-config-default)
+
+(eval-after-load "auto-complete"
+  '(cl-nsubstitute-if '(auto-complete-mode "")
+                      (lambda (x) (equalp (car x) 'auto-complete-mode))
+                      minor-mode-alist))
 
 ;; for using Clang autocomplete
 
@@ -1436,12 +930,6 @@ instead, and with a prefix argument, justify as well."
 (add-to-list 'auto-mode-alist '("\\.ttl" . ttl-mode))
 (add-hook 'ttl-mode-hook 'turn-on-font-lock)
 
-;;;;;;;;;;;;;
-;; Nyquist ;;
-;;;;;;;;;;;;;
-
-(add-to-list 'auto-mode-alist '("\\.ny" . lisp-mode))
-
 ;;;;;;;;;;;;;;
 ;; lilypond ;;
 ;;;;;;;;;;;;;;
@@ -1468,45 +956,9 @@ instead, and with a prefix argument, justify as well."
 (global-set-key (kbd "<C-S-right>") 'mc/mark-next-like-this)
 (global-set-key (kbd "<C-S-left>") 'mc/mark-previous-like-this)
 
-(global-set-key (kbd "C-c n") 'mc/insert-numbers)
-
-;; redefine mc/insert-numbers to do characters as well
-
-(defun mc/insert-numbers (num-or-char)
-  "Insert increasing numbers or characters for each cursor, starting at 0 or NUM-OR-CHAR."
-  (interactive "cStart from (default 0): ")
-  (setq mc--insert-numbers-number (if (= num-or-char (string-to-char (kbd "RET")))
-                                      ?0
-                                    num-or-char))
-  (mc/for-each-cursor-ordered
-   (mc/execute-command-for-fake-cursor 'mc--insert-number-and-increase cursor)))
-
-(defvar mc--insert-numbers-number ?0)
-
-(defun mc--insert-number-and-increase ()
-  (interactive)
-  (insert mc--insert-numbers-number)
-  (setq mc--insert-numbers-number (1+ mc--insert-numbers-number)))
-
-;;;;;;;;;;;;;;;;
-;; Processing ;;
-;;;;;;;;;;;;;;;;
-
-(setq processing-application-dir "~/Applications/Processing.app")
-(setq processing-sketchbook-dir "~/Code/processing")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; handy, misc. elisp functions ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun copy-buffer-file-name-as-kill ()
-  (interactive)
-  (let ((fname (buffer-file-name)))
-    (if fname
-        (progn
-          (kill-new fname)
-          (message "%s" fname))
-      (message "current buffer is not visiting any file."))))
+;;;;;;;;;;
+;; misc ;;
+;;;;;;;;;;
 
 (defun read-lines (fpath)
   "Return a list of lines of a file at at FPATH."
@@ -1553,72 +1005,8 @@ Replaces default behaviour of `comment-dwim', when it inserts comment at the end
 	(read-only-mode 0)
 	(yank)))))
 
-;; (global-set-key (kbd "C-c d") 'duplicate-line)
-;; (global-set-key (kbd "C-c b") 'comment-box)
-
-;; unstick "stuck" color codes in shell buffer
-
-(defun unstick-ansi-color-codes ()
-  (interactive)
-  (end-of-buffer)
-  (insert "echo -e \"\033[m\"")
-  (comint-send-input nil t))
-
-;; church music helper functions
-
-(defun date-of-next-Sunday ()
-  "return's next Sunday's date, as a string"
-  (let ((next-sun (calendar-gregorian-from-absolute
-                   (+ (calendar-absolute-from-gregorian (calendar-current-date))
-                      (% (- 7 (string-to-number (format-time-string "%u"))) 7)))))
-  (format "%04d-%02d-%02d"
-          (nth 2 next-sun)
-          (nth 0 next-sun)
-          (nth 1 next-sun))))
-
-(defun compile-church-chord-chart-pdf (num-songs)
-  (interactive "nNumber of songs: ")
-  (let* ((church-music-dir "/Users/ben/Documents/Church/Music/")
-         (chord-charts-dir (concat church-music-dir "chord-charts/"))
-         (lead-sheets-dir (concat church-music-dir "lead-sheets/"))
-         (candidates (append (mapcar (lambda (f) (concat "chord-charts/" f)) (directory-files (concat church-music-dir "chord-charts/") nil "\\.pdf"))
-                             (mapcar (lambda (f) (concat "lead-sheets/" f)) (directory-files (concat church-music-dir "lead-sheets/") nil "\\.pdf"))))
-         (output-filename (format "/tmp/%s.pdf" (date-of-next-Sunday)))
-         (charts (loop repeat num-songs collect (ido-completing-read "chart: " candidates nil :require-match))))
-    (let ((default-directory church-music-dir))
-      (shell-command (format "pdfjam %s -o %s && open %s"
-                             (mapconcat #'identity charts " ")
-                             output-filename
-                             output-filename)))))
-
-;; lisp debugging
-
-(defun ben-insert-debug-printlns ()
-  "put a debugging println before every single function call"
-  (interactive)
-  (save-excursion
-    (let (beg end count)
-      (setq beg (point))
-      (setq count 0)
-      (end-of-defun)
-      (setq end (point))
-      (goto-char beg)
-      (while (search-forward "(" end :noerror)
-        (backward-char)
-        (sp-wrap-with-paren)
-        (insert (format "begin (println %03d) " count))
-        (setq count (1+ count))
-        (forward-char)))))
-
-(defun ben-wrap-sexp-in-println-checkpoints ()
-  "put a debugging println before every single function call"
-  (interactive)
-  (save-excursion
-    (sp-wrap-with-paren)
-    (insert "begin (println '-------------------checkpoint-BEGIN) ")
-    (sp-up-sexp)
-    (backward-char)
-    (insert "(println '-------------------checkpoint-END)")))
+(global-set-key (kbd "C-c d") 'duplicate-line)
+(global-set-key (kbd "C-c b") 'comment-box)
 
 ;;;;;;;;;;;;;;;;;;
 ;; emacs server ;;
@@ -1634,8 +1022,5 @@ Replaces default behaviour of `comment-dwim', when it inserts comment at the end
 ;; toggle fullscreen
 
 (if (display-graphic-p)
-    (if (fboundp #'toggle-frame-fullscreen)
-        (toggle-frame-fullscreen)
-      (message "toggle-frame-fullscreen not defined - are you on Emacs 24.4 or greater?")))
+    (toggle-frame-maximized))
 
-;;; init.el ends here

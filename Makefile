@@ -10,10 +10,12 @@ osx:
 	ln -sf $(DOTFILES_DIR)/gitconfig ~/.gitconfig
 	ln -sf $(DOTFILES_DIR)/gitignore ~/.gitignore
 
+	mkdir -p ~/.emacs.d
 	ln -sf $(DOTFILES_DIR)/init.el ~/.emacs.d/
 	ln -sf $(DOTFILES_DIR)/snippets ~/.emacs.d/
 
 	ln -sf $(DOTFILES_DIR)/RProfile ~/.RProfile
+	mkdir -p ~/.lein
 	ln -sf $(DOTFILES_DIR)/profiles.clj ~/.lein/
 	ln -sf $(DOTFILES_DIR)/ssh_config ~/.ssh/config
 

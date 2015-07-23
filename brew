@@ -12,7 +12,7 @@ brew install faac
 brew install faad2
 brew install ffmpeg
 brew install flac
-#brew install gettext
+brew install gettext
 #brew install gfortran
 #brew install ghostscript
 brew install git
@@ -46,8 +46,8 @@ brew install texinfo
 brew install unrar
 #brew install vimeo-downloader
 #brew install w3m
-#brew install x264
-#brew install xvid
+brew install x264
+brew install xvid
 #brew install xz
 brew install youtube-dl
 brew install python
@@ -56,3 +56,11 @@ brew install dark-mode
 # Local Variables:
 # mode: sh
 # End:
+
+#argtable	avr-libc				jpeg		libffi		libtiff		mad		pcre		readline	texinfo
+#assimp		avrdude		exiftool	flac		git		jq		libftdi0	libtool		mpfr		pixman		rtmidi-c	
+#auctex		boost		extempore	fontconfig	glew		kissfft		libmpc		libusb			pkg-config	ruby		
+#autoconf	cairo		extempore-llvm	fping		glib		lame		libogg		libusb-compat	nmap		png++		shivavg		
+#automake	cloog		eye-d3		freetype	gmp		latex2rtf	libpng		libvo-aacenc	openssl		portaudio	sox		
+#avr-binutils	cmake				gcc				libdrawtext	libsndfile	libvorbis	pandoc				sqlite		yasm
+#avr-gcc		gdbm		isl		libelf		libsoil		libyaml		pandoc-citeproc	r		texi2html	

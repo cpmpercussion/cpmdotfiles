@@ -1,6 +1,6 @@
-;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;: charles martin's .emacs ;;
-;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 ;;;;;;;;;;;;;;;;;;;;;
@@ -46,7 +46,6 @@
            markdown-mode
            monokai-theme
            multiple-cursors
-           ;; nrepl-ritz ;; shadows cider-mode
            org
            paredit
            powerline
@@ -62,7 +61,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; cross-platform setup ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (exec-path-from-shell-initialize)
 (exec-path-from-shell-copy-envs '("EDITOR" "EXT_LLVM_DIR" "LD_LIBRARY_PATH"))
 
@@ -74,7 +72,6 @@
   (charles-setup-keybindings))
 
 ;; OSX
-
 (defun spotlight-locate-make-command-line (search-string)
   (list "mdfind" "-interpret" search-string))
 
@@ -105,7 +102,6 @@
   (charles-setup-keybindings))
 
 ;; Windows
-
 (defun charles-windows-setup ()
   (setq base-face-height 160)
   (setq w32-pass-lwindow-to-system nil)
@@ -119,16 +115,13 @@
 ;;;;;;;;;;;;;;;;;;;
 ;; customisation ;;
 ;;;;;;;;;;;;;;;;;;;
-
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (load custom-file t)
 
 ;;;;;;;;;;;;;;;;
 ;; smex & ido ;;
 ;;;;;;;;;;;;;;;;
-
 (require 'flx-ido)
-
 (setq smex-save-file (concat user-emacs-directory ".smex-items"))
 (smex-initialize)
 
@@ -321,9 +314,10 @@
 
 (require 'powerline)
 
-(setq powerline-default-separator 'slant)
+;(setq powerline-default-separator 'slant)
 (setq powerline-height 30)
 
+(powerline-default-theme)
 
 (defun powerline-charles-theme ()
   "Charles' powerline theme, based on \\[powerline-default-theme]"
@@ -368,7 +362,7 @@
                              (powerline-fill face2 (powerline-width rhs))
                              (powerline-render rhs)))))))
 
-(powerline-charles-theme)
+;(powerline-charles-theme)
 
 ;;;;;;;;;;;;
 ;; eshell ;;
@@ -587,9 +581,6 @@
   (setq TeX-parse-self t)
   (setq TeX-auto-save t)
   (add-to-list 'auto-mode-alist '("\\.cls" . LaTeX-mode))
-  ;; use Skim for pdfs on OSX
-  ;; Program to view pdfs
-
   ;; synctex
   (setq TeX-source-correlate-mode t)
   (setq TeX-source-correlate-method 'synctex)
@@ -928,14 +919,6 @@
 (add-to-list 'auto-mode-alist '("\\.ttl" . ttl-mode))
 (add-hook 'ttl-mode-hook 'turn-on-font-lock)
 
-;;;;;;;;;;;;;;
-;; lilypond ;;
-;;;;;;;;;;;;;;
-
-(autoload 'LilyPond-mode "lilypond-mode")
-(add-to-list 'auto-mode-alist '("\\.ly$" . LilyPond-mode))
-(add-hook 'LilyPond-mode-hook 'turn-on-font-lock)
-
 ;;;;;;;;;
 ;; abc ;;
 ;;;;;;;;;
@@ -1020,4 +1003,17 @@ Replaces default behaviour of `comment-dwim', when it inserts comment at the end
 
 (if (display-graphic-p)
     (toggle-frame-maximized))
+
+;;;;;;;;;;;;;;;;;;
+;; Scrolling    ;;
+;;;;;;;;;;;;;;;;;;
+;; scroll one line at a time (less "jumpy" than defaults)
+(setq scroll-step 1)
+(setq scroll-conservatively 1000)
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+(setq mouse-wheel-progressive-speed nil)
+(setq mouse-wheel-follow-mouse t)
+
+
+
 

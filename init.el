@@ -314,10 +314,10 @@
 
 (require 'powerline)
 
-;(setq powerline-default-separator 'slant)
+(setq powerline-default-separator 'slant)
 (setq powerline-height 30)
 
-(powerline-default-theme)
+;(powerline-default-theme)
 
 (defun powerline-charles-theme ()
   "Charles' powerline theme, based on \\[powerline-default-theme]"
@@ -362,7 +362,7 @@
                              (powerline-fill face2 (powerline-width rhs))
                              (powerline-render rhs)))))))
 
-;(powerline-charles-theme)
+(powerline-charles-theme)
 
 ;;;;;;;;;;;;
 ;; eshell ;;

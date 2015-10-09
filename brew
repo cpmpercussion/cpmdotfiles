@@ -6,7 +6,7 @@ brew update && brew upgrade
 #brew install aspell
 #brew install cmake
 #brew install ctags
-brew install emacs --HEAD --use-git-head --cocoa
+brew install emacs --HEAD --use-git-head --with-cocoa
 #brew install enca
 brew install faac
 brew install faad2
@@ -57,10 +57,74 @@ brew install dark-mode
 # mode: sh
 # End:
 
-#argtable	avr-libc				jpeg		libffi		libtiff		mad		pcre		readline	texinfo
-#assimp		avrdude		exiftool	flac		git		jq		libftdi0	libtool		mpfr		pixman		rtmidi-c	
-#auctex		boost		extempore	fontconfig	glew		kissfft		libmpc		libusb			pkg-config	ruby		
-#autoconf	cairo		extempore-llvm	fping		glib		lame		libogg		libusb-compat	nmap		png++		shivavg		
-#automake	cloog		eye-d3		freetype	gmp		latex2rtf	libpng		libvo-aacenc	openssl		portaudio	sox		
-#avr-binutils	cmake				gcc				libdrawtext	libsndfile	libvorbis	pandoc				sqlite		yasm
-#avr-gcc		gdbm		isl		libelf		libsoil		libyaml		pandoc-citeproc	r		texi2html	
+# Charles' homebrew packages
+argtable
+avr-libc
+jpeg
+libffi
+libtiff
+mad
+pcre
+readline
+texinfo
+
+assimp
+avrdude
+exiftool
+flac
+git
+jq
+libftdi0
+libtool
+mpfr
+pixman
+rtmidi-c	
+boost
+extempore
+fontconfig
+glew
+kissfft
+libmpc
+libusb
+pkg-config
+ruby		
+autoconf
+cairo
+extempore-llvm
+fping
+glib
+lame
+libogg
+libusb-compat
+nmap
+png++
+shivavg		
+automake
+cloog
+eye-d3
+freetype
+gmp
+latex2rtf
+libpng
+libvo-aacenc
+openssl
+portaudio
+sox		
+avr-binutils
+cmake
+gcc
+libdrawtext
+libsndfile
+libvorbis
+pandoc
+sqlite
+yasm
+avr-gcc
+gdbm
+isl
+libelf
+libsoil
+libyaml
+pandoc-citeproc
+r
+texi2html	

@@ -1,16 +1,6 @@
 # Exports
-export PATH="/Users/charles/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/X11/bin:/usr/texbin"
+export PATH="/Users/charles/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/X11/bin:/Library/TeX/texbin"
 export EDITOR="emacsclient --alternate-editor=emacs --no-wait"
-
-## for debian packaging
-# export DEBEMAIL="cpm@charlesmartin.com.au"
-# export DEBFULLNAME="Charles Martin"
-
-# python
-#export PYTHONPATH=`brew --prefix`/lib/python2.7/site-packages
-
-# Path setting for homebrew python
-export PATH=/usr/local/share/python:${PATH}
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
@@ -20,8 +10,6 @@ export EXT_LLVM_DIR="/usr/local/Cellar/extempore-llvm/3.4.1"
 
 ### Bibtex
 export BIBINPUTS=~/Dropbox/writing/2013ComputerMusic.bib:$BIBINPUTS
-
-
 
 # set up rbenv
 #export RBENV_ROOT=/usr/local/var/rbenv

@@ -39,16 +39,9 @@ brew install r
 #brew install sqlite
 #brew install ssh-copy-id
 brew install texinfo
-#brew install theora
-#brew install tmux
-#brew install transmission
-#brew install tree
 brew install unrar
-#brew install vimeo-downloader
-#brew install w3m
 brew install x264
 brew install xvid
-#brew install xz
 brew install youtube-dl
 brew install python
 brew install dark-mode
@@ -56,75 +49,72 @@ brew install dark-mode
 # Local Variables:
 # mode: sh
 # End:
+brew install caskroom/cask/brew-cask
+brew cask install xquartz
+brew cask install pd
+brew cask install supercollider
+brew cask install processing
+
 
 # Charles' homebrew packages
-argtable
-avr-libc
-jpeg
-libffi
-libtiff
-mad
-pcre
-readline
-texinfo
+brew install argtable
+brew install avr-libc
+brew install jpeg
+brew install libffi
+brew install libtiff
+brew install mad
+brew install pcre
+brew install readline
+brew install texinfo
 
-assimp
-avrdude
-exiftool
-flac
-git
-jq
-libftdi0
-libtool
-mpfr
-pixman
-rtmidi-c	
-boost
-extempore
-fontconfig
-glew
-kissfft
-libmpc
-libusb
-pkg-config
-ruby		
-autoconf
-cairo
-extempore-llvm
-fping
-glib
-lame
-libogg
-libusb-compat
-nmap
-png++
-shivavg		
-automake
-cloog
-eye-d3
-freetype
-gmp
-latex2rtf
-libpng
-libvo-aacenc
-openssl
-portaudio
-sox		
-avr-binutils
-cmake
-gcc
-libdrawtext
-libsndfile
-libvorbis
-pandoc
-sqlite
-yasm
-avr-gcc
-gdbm
-isl
-libelf
-libsoil
-libyaml
-pandoc-citeproc
-r
-texi2html	
+brew install assimp
+brew install avrdude
+brew install exiftool
+brew install flac
+brew install jq
+brew install libftdi0
+brew install libtool
+brew install mpfr
+brew install pixman
+brew install extempore
+brew install fontconfig
+brew install glew
+brew install kissfft
+brew install libmpc
+brew install libusb
+brew install pkg-config
+brew install ruby		
+brew install autoconf
+brew install cairo
+brew install extempore-llvm
+brew install fping
+brew install glib
+brew install lame
+brew install libogg
+brew install libusb-compat
+brew install nmap
+brew install png++
+brew install shivavg		
+brew install automake
+brew install cloog
+brew install eye-d3
+brew install freetype
+brew install gmp
+brew install latex2rtf
+brew install libpng
+brew install libvo-aacenc
+brew install openssl
+brew install sox		
+brew install avr-binutils
+brew install cmake
+brew install gcc
+brew install libdrawtext
+brew install sqlite
+brew install yasm
+brew install avr-gcc
+brew install gdbm
+brew install isl
+
+brew install pandoc
+brew install pandoc-citeproc
+

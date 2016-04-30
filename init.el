@@ -878,37 +878,6 @@
  python-shell-completion-string-code
    "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
 
-
-;; -----------------------------
-;; emacs IPython notebook config
-;; -----------------------------
-
-; use autocompletion, but don't start to autocomplete after a dot
-(setq ein:complete-on-dot -1)
-(setq ein:use-auto-complete 1)
-
-; set python console args
-(setq ein:console-args '("--gui=osx" "--matplotlib=osx" "--colors=Linux"))
-
-;(setq ein:console-args
-;      (if (system-is-mac)
-;	  '("--gui=osx" "--matplotlib=osx" "--colors=Linux")
-;	(if (system-is-linux)
-;	    '("--gui=wx" "--matplotlib=wx" "--colors=Linux"))))
-
-; timeout settings
-(setq ein:query-timeout 1000)
-
-; IPython notebook
-(require 'ein)
-
-; shortcut function to load notebooklist
-(defun load-ein () 
-  (ein:notebooklist-load)
-  (interactive)
-  (ein:notebooklist-open))
-
-
 ;; ------------------
 ;; misc python config
 ;; ------------------

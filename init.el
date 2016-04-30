@@ -152,8 +152,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; display & appearance ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; visible bell workaround for el capitan
+(setq visible-bell nil)
+(setq ring-bell-function (lambda ()
+(invert-face 'mode-line)
+(run-with-timer 0.1 nil 'invert-face 'mode-line)))
+;;(setq visible-bell t)
 
-(setq visible-bell t)
 (setq inhibit-startup-message t)
 (setq color-theme-is-global t)
 (setq bidi-display-reordering nil)

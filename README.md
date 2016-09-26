@@ -1,7 +1,9 @@
 # Description
 
 A set of Emacs-centric dotfiles - passed down from
-[@benswift](https://github.com/benswift/.dotfiles) and [others](https://github.com/mathiasbynens/dotfiles).
+[@benswift](https://github.com/benswift/.dotfiles) and
+[others](https://github.com/mathiasbynens/dotfiles). I just changed
+bits for my own setup!
 
 # Installation
 

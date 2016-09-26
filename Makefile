@@ -20,7 +20,8 @@ linux:
 	ln -sf $(DOTFILES_DIR)/bash_profile.linux ~/.bash_profile
 	ln -sf $(DOTFILES_DIR)/gitconfig ~/.gitconfig
 	ln -sf $(DOTFILES_DIR)/gitignore ~/.gitignore
-	ln -sf $(DOTFILES_DIR)/emacs ~/.emacs
+	ln -sf $(DOTFILES_DIR)/init.el ~/.emacs.d/
+	ln -sf $(DOTFILES_DIR)/emacs-color-theme-solarized ~/.emacs.d/
 	ln -sf $(DOTFILES_DIR)/snippets ~/.emacs.d/
 	ln -sf $(DOTFILES_DIR)/RProfile ~/.RProfile
 	ln -sf $(DOTFILES_DIR)/ssh_config ~/.ssh/config

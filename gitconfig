@@ -70,9 +70,6 @@
 [github]
 	user = cpmpercussion
 
-[credential]
-        helper = osxkeychain
-
 [filter "media"]
         required = true
         clean = git media clean %f

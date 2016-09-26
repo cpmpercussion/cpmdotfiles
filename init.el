@@ -69,7 +69,8 @@
 ;; linux
 
 (defun charles-linux-setup ()
-  (setq base-face-height 140)
+  (set-frame-font "Inconsolata-11")
+  (setq base-face-height 110)
   (setq frame-maximization-mode 'maximized)
   (charles-setup-keybindings))
 
@@ -879,11 +880,11 @@
 ;; -----------------------------
 
 ; use autocompletion, but don't start to autocomplete after a dot
-(setq ein:complete-on-dot -1)
-(setq ein:use-auto-complete 1)
+;(setq ein:complete-on-dot -1)
+;(setq ein:use-auto-complete 1)
 
 ; set python console args
-(setq ein:console-args '("--gui=osx" "--matplotlib=osx" "--colors=Linux"))
+;(setq ein:console-args '("--gui=osx" "--matplotlib=osx" "--colors=Linux"))
 
 ;(setq ein:console-args
 ;      (if (system-is-mac)
@@ -892,16 +893,16 @@
 ;	    '("--gui=wx" "--matplotlib=wx" "--colors=Linux"))))
 
 ; timeout settings
-(setq ein:query-timeout 1000)
+;(setq ein:query-timeout 1000)
 
 ; IPython notebook
-(require 'ein)
+;(require 'ein)
 
 ; shortcut function to load notebooklist
-(defun load-ein () 
-  (ein:notebooklist-load)
-  (interactive)
-  (ein:notebooklist-open))
+;; (defun load-ein () 
+;;   (ein:notebooklist-load)
+;;   (interactive)
+;;   (ein:notebooklist-open))
 
 
 ;; ------------------
@@ -910,7 +911,7 @@
 
 ; pydoc info
 
-(require 'pydoc-info)
+;; (require 'pydoc-info)
 
 ;; ; jedi python completion
 ;; (include-elget-plugin "ctable")   ; required for epc

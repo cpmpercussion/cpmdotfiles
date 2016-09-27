@@ -70,9 +70,6 @@
 [github]
 	user = cpmpercussion
 
-[credential]
-        helper = osxkeychain
-
 [filter "media"]
         required = true
         clean = git media clean %f
@@ -90,3 +87,5 @@
         clean = git lfs clean %f
         smudge = git lfs smudge %f
         required = true
+[credential]
+	helper = osxkeychain

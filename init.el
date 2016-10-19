@@ -853,14 +853,12 @@
 ; from python.el
 (require 'python)
 
-;python-shell-interpreter-args (if (system-is-mac)
-;			   "--matplotlib=osx --colors=Linux"
-;                                (if (system-is-linux)
-;		       "--gui=wx --matplotlib=wx --colors=Linux"))
-
 (setq
  python-shell-interpreter "ipython"
- python-shell-interpreter-args "-i --simple-prompt --matplotlib=osx --colors=Linux"
+ python-shell-interpreter-args (if (equal system-type 'darwin)
+			   "--matplotlib=osx --colors=Linux -i --simple-prompt"
+                               (if (equal system-type 'gnu/linux) 
+		       "--colors=Linux -i --simple-prompt"))
  python-shell-prompt-regexp "In \\[[0-9]+\\]: "
  python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
  python-shell-completion-setup-code
@@ -952,7 +950,6 @@
   '(define-key python-mode-map (kbd "C-c !") 'python-shell-switch-to-shell))
 (eval-after-load 'python
   '(define-key python-mode-map (kbd "C-c |") 'python-shell-send-region))
-
 
 ;; elpy setup
 

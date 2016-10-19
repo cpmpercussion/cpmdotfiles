@@ -630,7 +630,7 @@
 ;; extempore ;;
 ;;;;;;;;;;;;;;;
 
-(setq user-extempore-directory "/usr/local/Cellar/extempore/0.52/")
+(setq user-extempore-directory "/Applications/extempore/")
 (autoload 'extempore-mode (concat user-extempore-directory "extras/extempore.el") "" t)
 (add-to-list 'auto-mode-alist '("\\.xtm$" . extempore-mode))
 
@@ -842,15 +842,6 @@
 (add-to-list 'auto-mode-alist '("\\.r$" . R-mode))
 (add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
 
-;;;;;;;;;;;;
-;; Python ;;
-;;;;;;;;;;;;
-
-;(require 'python)
-;(setq python-shell-interpreter "ipython")
-;(setq python-shell-interpreter-args "--pylab")
-
-
 ;------------------------;
 ;;; Python Programming ;;;
 ;------------------------;
@@ -869,7 +860,7 @@
 
 (setq
  python-shell-interpreter "ipython"
- python-shell-interpreter-args "--matplotlib=osx --colors=Linux"
+ python-shell-interpreter-args "-i --simple-prompt --matplotlib=osx --colors=Linux"
  python-shell-prompt-regexp "In \\[[0-9]+\\]: "
  python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
  python-shell-completion-setup-code

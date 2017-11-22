@@ -222,6 +222,7 @@
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 (setq diff-switches "-u")
 (setq ispell-dictionary "en_GB")
+(setq ispell-program-name "aspell")
 
 (define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)
 
@@ -869,8 +870,14 @@
    "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
 
 ;; -----------------------------
-;; emacs IPython notebook config
+;; emacs ipython notebook config
 ;; -----------------------------
+
+;;(package-initialize)
+(require 'ein)
+(require 'ein-loaddefs)
+(require 'ein-notebook)
+(require 'ein-subpackages)
 
 ; use autocompletion, but don't start to autocomplete after a dot
 ;(setq ein:complete-on-dot -1)

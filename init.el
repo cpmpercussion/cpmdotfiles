@@ -479,16 +479,6 @@
 (setq org-export-with-toc nil)
 
 (defun charles-org-mode-hook ()
-  ;; ;; org-latex export
-  ;; (add-to-list 'org-export-latex-classes
-  ;;              '("scrartcl"
-  ;;                "\\documentclass[12pt,a4paper]{scrartcl}"
-  ;;                ("\\section{%s}" . "\\section*{%s}")
-  ;;                ("\\subsection{%s}" . "\\subsection*{%s}")
-  ;;                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-  ;;                ("\\paragraph{%s}" . "\\paragraph*{%s}")
-  ;;                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-  ;; (setq org-export-latex-default-class "scrartcl")
   ;; keymappings
   (define-key org-mode-map (kbd "<M-left>") 'backward-word)
   (define-key org-mode-map (kbd "<M-right>") 'forward-word)
@@ -501,73 +491,6 @@
   (define-key org-mode-map (kbd "<C-S-left>") nil))
 
 (add-hook 'org-mode-hook 'charles-org-mode-hook)
-
-;; (setq org-format-latex-header
-;;       "\\documentclass[12pt,a4paper]{scrartcl}
-;; \\usepackage{libertineotf}
-;; \\usepackage{fontspec}
-;; \\setmonofont[Scale=MatchLowercase,Mapping=tex-text]{Source Code Pro}
-
-;; \\usepackage{booktabs}
-;; \\usepackage{tabularx}
-;; \\renewcommand{\\arraystretch}{1.2}
-
-;; % biblatex
-
-;; \\usepackage[%
-;; backend=biber,
-;; natbib=true,
-;; backref=true,
-;; citecounter=true,
-;; dashed=false,
-;; backrefstyle=three,
-;; citestyle=authoryear-icomp,
-;; firstinits=true,
-;; maxcitenames=2,
-;; maxbibnames=10,
-;; uniquename=mininit,
-;; bibstyle=authoryear,
-;; % refsegment=chapter,
-;; % ibidtracker=strict,
-;; url=false,
-;; doi=false]{biblatex}
-
-;; % to use year-only bib format
-;; \\AtEveryBibitem{\\clearfield{month}}
-;; \\AtEveryCitekey{\\clearfield{month}}
-
-;; % specify the bib file here
-;; \\addbibresource{papers.bib}
-
-;; % IMPORTANT: to actually print the bibliography in the document,
-;; % insert the command: \\printbibliography[title=References]
-
-;; % csquotes
-
-;; \\usepackage[english=british,threshold=15,thresholdtype=words]{csquotes}
-;; \\SetCiteCommand{\\parencite}
-
-;; \\newenvironment*{smallquote}
-;;   {\\quote\\small}
-;;   {\\endquote}
-;; \\SetBlockEnvironment{smallquote}
-
-;; % hyperref & bookmark
-
-;; \\usepackage[svgnames,hyperref]{xcolor}
-
-;; \\usepackage[%
-;; unicode=true,
-;; hyperindex=true,
-;; bookmarks=true,
-;; colorlinks=true, % change to false for final
-;; pdfborder=0,
-;; allcolors=DarkBlue,
-;; % plainpages=false,
-;; pdfpagelabels,
-;; hyperfootnotes=true]{hyperref}
-
-;; ")
 
 ;;;;;;;;;
 ;; erc ;;
@@ -872,59 +795,9 @@
  python-shell-completion-string-code
    "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
 
-;; -----------------------------
-;; emacs ipython notebook config
-;; -----------------------------
-
-;;(package-initialize)
-(require 'ein)
-(require 'ein-loaddefs)
-(require 'ein-notebook)
-(require 'ein-subpackages)
-
-; use autocompletion, but don't start to autocomplete after a dot
-;(setq ein:complete-on-dot -1)
-;(setq ein:use-auto-complete 1)
-
-; set python console args
-;(setq ein:console-args '("--gui=osx" "--matplotlib=osx" "--colors=Linux"))
-
-;(setq ein:console-args
-;      (if (system-is-mac)
-;	  '("--gui=osx" "--matplotlib=osx" "--colors=Linux")
-;	(if (system-is-linux)
-;	    '("--gui=wx" "--matplotlib=wx" "--colors=Linux"))))
-
-; timeout settings
-;(setq ein:query-timeout 1000)
-
-; IPython notebook
-;(require 'ein)
-
-; shortcut function to load notebooklist
-;; (defun load-ein () 
-;;   (ein:notebooklist-load)
-;;   (interactive)
-;;   (ein:notebooklist-open))
-
-
 ;; ------------------
 ;; misc python config
 ;; ------------------
-
-; pydoc info
-
-;; (require 'pydoc-info)
-
-;; ; jedi python completion
-;; (include-elget-plugin "ctable")   ; required for epc
-;; (include-elget-plugin "deferred") ; required for epc
-;; (include-elget-plugin "epc")      ; required for jedi
-;; (include-elget-plugin "jedi")
-;; (require 'jedi)
-;; (setq jedi:setup-keys t)
-;; (autoload 'jedi:setup "jedi" nil t)
-;; (add-hook 'python-mode-hook 'jedi:setup)
 
 ;; pyflakes flymake integration
 ;; http://stackoverflow.com/a/1257306/347942
@@ -961,17 +834,17 @@
 (eval-after-load 'python
   '(define-key python-mode-map (kbd "C-c |") 'python-shell-send-region))
 
-;; elpy setup
 
-;; (elpy-enable)
-;; (setq elpy-rpc-backend 'jedi)
-;; (setq python-indent-offset 2)
 
-;; (setq  elpy-default-minor-modes
-;;        '(eldoc-mode
-;;          flymake-mode
-;;          ;; highlight-indentation-mode
-;;          auto-complete-mode))
+
+;; view pdfs in doc view
+;; allows moving through documents from other windows. handy.
+(fset 'doc-prev "\C-xo\C-x[\C-xo")
+(fset 'doc-next "\C-xo\C-x]\C-xo")
+(global-set-key (kbd "M-[") 'doc-prev)
+(global-set-key (kbd "M-]") 'doc-next)
+
+
 
 ;;;;;;;;;;;;;;;
 ;; yasnippet ;;
@@ -1006,33 +879,6 @@
   '(cl-nsubstitute-if '(auto-complete-mode "")
                       (lambda (x) (equalp (car x) 'auto-complete-mode))
                       minor-mode-alist))
-
-;; for using Clang autocomplete
-
-;; (require 'auto-complete-clang)
-
-;; (defun my-ac-cc-mode-setup ()
-;;   (setq ac-sources (append '(ac-source-clang ac-source-yasnippet ac-source-gtags) ac-sources)))
-
-;; (defun my-ac-config ()
-;;   (setq-default ac-sources '(ac-source-abbrev ac-source-dictionary ac-source-words-in-same-mode-buffers))
-;;   (add-hook 'emacs-lisp-mode-hook 'ac-emacs-lisp-mode-setup)
-;;   (add-hook 'c-mode-common-hook 'my-ac-cc-mode-setup)
-;;   (add-hook 'ruby-mode-hook 'ac-ruby-mode-setup)
-;;   (add-hook 'css-mode-hook 'ac-css-mode-setup)
-;;   (add-hook 'auto-complete-mode-hook 'ac-common-setup)
-;;   (global-auto-complete-mode t))
-
-;; (my-ac-config)
-
-;;;;;;;;;;;;;;;;;;;;;;;
-;; ttl (Turtle) mode ;;
-;;;;;;;;;;;;;;;;;;;;;;;
-
-(autoload 'ttl-mode "ttl-mode" "Major mode for OWL or Turtle files" t)
-(add-to-list 'auto-mode-alist '("\\.n3" . ttl-mode))
-(add-to-list 'auto-mode-alist '("\\.ttl" . ttl-mode))
-(add-hook 'ttl-mode-hook 'turn-on-font-lock)
 
 ;;;;;;;;;
 ;; abc ;;
@@ -1128,7 +974,3 @@ Replaces default behaviour of `comment-dwim', when it inserts comment at the end
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
 (setq mouse-wheel-progressive-speed nil)
 (setq mouse-wheel-follow-mouse t)
-
-
-
-

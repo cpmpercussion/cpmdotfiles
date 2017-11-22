@@ -48,6 +48,7 @@
            multiple-cursors
            org
            paredit
+           pandoc-mode
            powerline
            scss-mode
            smex
@@ -820,6 +821,8 @@
   (define-key markdown-mode-map (kbd "<M-right>") nil))
 
 (add-hook 'markdown-mode-hook 'charles-markdown-mode-hook)
+
+(add-hook 'markdown-mode-hook 'pandoc-mode)
 
 ;;;;;;;;;;
 ;; yaml ;;

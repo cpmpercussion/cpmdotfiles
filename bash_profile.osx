@@ -7,8 +7,7 @@ export LIBRARY_PATH=$LIBRARY_PATH:/usr/local/opt/openssl/lib/
 export PATH="/users/charles/opt/GNAT/2019/bin:$PATH"
 
 
-### Added by the Heroku Toolbelt
-export PATH="/usr/local/heroku/bin:$PATH"
+# PyEnv Stuff
 
 ### Gems
 export PATH="/Users/charles/.gem/ruby/2.4.0/bin:$PATH"
@@ -16,18 +15,10 @@ export PATH="/Users/charles/.gem/ruby/2.4.0/bin:$PATH"
 ### Bibtex
 export BIBINPUTS=~/Dropbox/writing/2013ComputerMusic.bib:$BIBINPUTS
 
-### ANU VPN
+## ANU VPN
 alias anuvpn="sudo openconnect anuvpn.anu.edu.au --authgroup=ANU --user=u4110680@CECS"
-
-# set up rbenv
-#export RBENV_ROOT=/usr/local/var/rbenv
-#eval "$(rbenv init -)"
-
-# List all files colorized in long format, including dot files
-alias la="ls -Gla"
-
-# List only directories
-alias lsd='ls -l | grep "^d"'
+alias plasticpal="ssh cecs-043651.cecs.anu.edu.au"
+alias paranoidandroid="ssh cecs-048944.cecs.anu.edu.au"
 
 # IP addresses
 alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
@@ -130,9 +121,14 @@ complete -o "nospace" -W "Contacts Calendar Dock Finder Mail Safari iTunes Syste
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
 
-# added by Miniconda3 installer
-export PATH="/Users/charles/miniconda3/bin:$PATH"
-
 # Local Python bin
 export PATH="/Users/charles/Library/Python/3.7/bin:$PATH"
+
+# 
+#export PATH="$HOME/.poetry/bin:$PATH"
+#export PYENV_ROOT="$HOME/.pyenv"
+#export PATH="$PYENV_ROOT/bin:$PATH"
+#if command -v pyenv 1>/dev/null 2>&1; then
+#  eval "$(pyenv init -)"
+#fi
 

@@ -1,6 +1,11 @@
 # Exports
 export PATH="/Users/charles/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/X11/bin:/Library/TeX/texbin"
 export EDITOR="emacsclient --alternate-editor=emacs --no-wait"
+export LIBRARY_PATH=$LIBRARY_PATH:/usr/local/opt/openssl/lib/
+
+### Adacore Gnat
+export PATH="/users/charles/opt/GNAT/2019/bin:$PATH"
+
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
@@ -10,6 +15,9 @@ export PATH="/Users/charles/.gem/ruby/2.4.0/bin:$PATH"
 
 ### Bibtex
 export BIBINPUTS=~/Dropbox/writing/2013ComputerMusic.bib:$BIBINPUTS
+
+### ANU VPN
+alias anuvpn="sudo openconnect anuvpn.anu.edu.au --authgroup=ANU --user=u4110680@CECS"
 
 # set up rbenv
 #export RBENV_ROOT=/usr/local/var/rbenv
@@ -124,3 +132,7 @@ eval "$(rbenv init -)"
 
 # added by Miniconda3 installer
 export PATH="/Users/charles/miniconda3/bin:$PATH"
+
+# Local Python bin
+export PATH="/Users/charles/Library/Python/3.7/bin:$PATH"
+

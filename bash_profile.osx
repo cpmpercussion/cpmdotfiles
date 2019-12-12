@@ -132,3 +132,5 @@ export PATH="/Users/charles/Library/Python/3.7/bin:$PATH"
 #  eval "$(pyenv init -)"
 #fi
 
+
+export PATH="$HOME/.poetry/bin:$PATH"

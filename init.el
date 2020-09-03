@@ -1,10 +1,4 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;: charles martin's .emacs ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;
-;; elpa ;;
-;;;;;;;;;;
+;; charles' init.el
 
 (require 'package)
 (setq package-archives
@@ -54,17 +48,6 @@
 ;; cross-platform setup ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 (exec-path-from-shell-initialize)
-;; linux
-
-(defun charles-linux-setup ()
-  (set-frame-font "Inconsolata-11")
-  (setq base-face-height 110)
-  (setq frame-maximization-mode 'maximized)
-  (charles-setup-keybindings))
-
-;; OSX
-(defun spotlight-locate-make-command-line (search-string)
-  (list "mdfind" "-interpret" search-string))
 
 (defun charles-setup-keybindings ()
   (define-key global-map (kbd "s-a") 'mark-whole-buffer)
@@ -79,6 +62,18 @@
   (define-key global-map (kbd "s-w") 'delete-frame)
   (define-key global-map (kbd "s-x") 'kill-region))
 
+
+;; linux
+(defun charles-linux-setup ()
+  (set-frame-font "Inconsolata-11")
+  (setq base-face-height 110)
+  (setq frame-maximization-mode 'maximized)
+  (charles-setup-keybindings))
+
+;; OSX
+(defun spotlight-locate-make-command-line (search-string)
+  (list "mdfind" "-interpret" search-string))
+
 (defun charles-osx-setup ()
   (setq base-face-height 160)
   (setq mac-option-modifier 'meta)
@@ -89,7 +84,6 @@
   (setq source-directory "/Library/Caches/Homebrew/emacs--git")
   (setq dired-guess-shell-alist-user '(("\\.pdf\\'" "open")))
   (setq frame-maximization-mode 'fullscreen)
-  ;; for railwaycat emacs-mac
   (charles-setup-keybindings))
 
 (cond ((equal system-type 'gnu/linux) (charles-linux-setup))
@@ -136,9 +130,8 @@
 ;; visible bell workaround for el capitan
 (setq visible-bell nil)
 (setq ring-bell-function (lambda ()
-(invert-face 'mode-line)
-(run-with-timer 0.1 nil 'invert-face 'mode-line)))
-
+                           (invert-face 'mode-line)
+                           (run-with-timer 0.1 nil 'invert-face 'mode-line)))
 (setq inhibit-startup-message t)
 (setq color-theme-is-global t)
 (setq bidi-display-reordering nil)
@@ -159,6 +152,7 @@
 (show-paren-mode 1)
 (column-number-mode 1)
 (hl-line-mode t)
+(global-display-line-numbers-mode)
 
 ;; show time and battery status in mode line
 (display-time-mode 1)
@@ -248,13 +242,6 @@
 (setq solarized-distinct-fringe-background t)
 (setq solarized-high-contrast-mode-line t)
 
-;; (add-to-list 'custom-theme-load-path "~/.emacs.d/emacs-color-theme-solarized/")
-;; (if (display-graphic-p)
-;;     (progn (load-theme 'solarized t)
-;;            (add-to-list 'default-frame-alist
-;;                         '(background-mode . dark))
-;;            (set-cursor-color "white")))
-
 ;;;;;;;;;;;
 ;; faces ;;
 ;;;;;;;;;;;
@@ -264,20 +251,17 @@
 
 (require 'all-the-icons)
 
-
 ;;;;;;;;;;;;;;;;;
 ;; keybindings ;;
 ;;;;;;;;;;;;;;;;;
 
 ;; handy shortcuts
-
 (global-set-key (kbd "<f5>") 'magit-status)
 (global-set-key (kbd "<f6>") 'compile)
 (global-set-key (kbd "C-c g") 'ag)
 (global-set-key (kbd "C-c u") 'find-dired)
 
 ;; window navigation
-
 (global-set-key (kbd "s-[") '(lambda () (interactive) (other-window -1)))
 (global-set-key (kbd "s-]") 'other-window)
 
@@ -308,56 +292,6 @@
 (setq telephone-line-height 30
       telephone-line-evil-use-short-tag t)
 (telephone-line-mode 1)
-
-;(require 'powerline)
-;(setq powerline-default-separator 'slant)
-;(setq powerline-height 30)
-;(powerline-default-theme)
-
-;; (defun powerline-charles-theme ()
-;;   "Charles' powerline theme, based on \\[powerline-default-theme]"
-;;   (interactive)
-;;   (setq-default mode-line-format
-;;                 '("%e"
-;;                   (:eval
-;;                    (let* ((active (powerline-selected-window-active))
-;;                           (mode-line (if active 'mode-line 'mode-line-inactive))
-;;                           (face1 (if active 'powerline-active1 'powerline-inactive1))
-;;                           (face2 (if active 'powerline-active2 'powerline-inactive2))
-;;                           (separator-left (intern (format "powerline-%s-%s"
-;;                                                           powerline-default-separator
-;;                                                           (car powerline-default-separator-dir))))
-;;                           (separator-right (intern (format "powerline-%s-%s"
-;;                                                            powerline-default-separator
-;;                                                            (cdr powerline-default-separator-dir))))
-;;                           (lhs (list (powerline-raw "%*" nil 'l)
-;;                                      (powerline-buffer-id nil 'l)
-;;                                      (when (and (boundp 'which-func-mode) which-func-mode)
-;;                                        (powerline-raw which-func-format nil 'l))
-;;                                      (powerline-raw " ")
-;;                                      (funcall separator-left mode-line face1)
-;;                                      (when (boundp 'erc-modified-channels-object)
-;;                                        (powerline-raw erc-modified-channels-object face1 'l))
-;;                                      (powerline-major-mode face1 'l)
-;;                                      (powerline-process face1)
-;;                                      (powerline-minor-modes face1 'l)
-;;                                      (powerline-narrow face1 'l)
-;;                                      (powerline-raw " " face1)
-;;                                      (funcall separator-left face1 face2)))
-;;                           (rhs (list (powerline-raw global-mode-string face2 'r)
-;;                                      (funcall separator-right face2 face1)
-;;                                      (powerline-raw "%4l" face1 'l)
-;;                                      (powerline-raw ":" face1 'l)
-;;                                      (powerline-raw "%3c" face1 'r)
-;;                                      (funcall separator-right face1 mode-line)
-;;                                      (powerline-raw " ")
-;;                                      (powerline-raw "%6p" nil 'r)
-;;                                      (powerline-hud face2 face1))))
-;;                      (concat (powerline-render lhs)
-;;                              (powerline-fill face2 (powerline-width rhs))
-;;                              (powerline-render rhs)))))))
-
-;(powerline-charles-theme)
 
 ;;;;;;;;;;;;
 ;; eshell ;;
@@ -417,16 +351,12 @@
                  (string-match "^[^.]+" hostname)
                  (match-end 0)))))
 
-;;;;;;;;;;;
-;; elisp ;;
-;;;;;;;;;;;
-
+; elisp
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
 
+;; files and stuff
 
-
-                                        ; neotree
-
+; neotree
 (require 'neotree)
 (global-set-key [f8] 'neotree-toggle)
 (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
@@ -630,7 +560,6 @@
 ;;;;;;;
 
 (require 'ess-site)
-
 (add-to-list 'auto-mode-alist '("\\.r$" . R-mode))
 (add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
 

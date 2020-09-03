@@ -15,8 +15,8 @@ export BIBINPUTS=~/Dropbox/writing/2013ComputerMusic.bib:$BIBINPUTS
 
 ## ANU VPN
 alias anuvpn="sudo openconnect anuvpn.anu.edu.au --authgroup=ANU --user=u4110680@CECS"
-alias plasticpal="ssh cecs-043651.cecs.anu.edu.au"
-alias paranoidandroid="ssh cecs-048944.cecs.anu.edu.au"
+alias plasticpal="ssh -J cmartin@cpu.cecs.anu.edu.au charles@cecs-043651.cecs.anu.edu.au"
+alias paranoidandroid="ssh -J cmartin@cpu.cecs.anu.edu.au charles@cecs-048944.cecs.anu.edu.au"
 
 # IP addresses
 alias ip="dig +short myip.opendns.com @resolver1.opendns.com"

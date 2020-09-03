@@ -4,7 +4,7 @@
 (setq package-archives
       '(("gnu" . "https://elpa.gnu.org/packages/")
         ("marmalade" . "https://marmalade-repo.org/packages/")
-        ("melpa" . "https://melpa.milkbox.net/packages/")))
+        ("melpa" . "https://melpa.org/packages/")))
 
 (unless package--initialized
   (package-initialize))
@@ -38,7 +38,8 @@
            smex
            telephone-line
            yaml-mode
-           yasnippet))
+           yasnippet
+           easy-jekyll))
   (if (not (package-installed-p package))
       (package-install package)))
 
@@ -562,6 +563,17 @@
 (require 'ess-site)
 (add-to-list 'auto-mode-alist '("\\.r$" . R-mode))
 (add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
+
+;; Jekyll
+
+(require `easy-jekyll)
+
+(setq easy-jekyll-basedir "~/Documents/src/cpm-homepage")
+(setq easy-jekyll-url "https://charlesmartin.com.au")
+; (setq easy-jekyll-sshdomain "blogdomain")
+(setq easy-jekyll-root "/")
+(setq easy-jekyll-previewtime "300")
+(define-key global-map (kbd "C-c C-e") 'easy-jekyll)
 
 ;------------------------;
 ;;; Python Programming ;;;

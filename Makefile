@@ -15,6 +15,8 @@ osx:
 	ln -sf $(DOTFILES_DIR)/RProfile ~/.RProfile
 	ln -sf $(DOTFILES_DIR)/ssh_config ~/.ssh/config
 	ln -sf $(DOTFILES_DIR)/scripts ~/bin
+	mkdir -p ~/.config/nvim
+	ln -sf $(DOTFILES_DIR)/init.vim ~/.config/nvim
 
 linux:
 	ln -sf $(DOTFILES_DIR)/bash_profile.linux ~/.bash_profile
@@ -28,6 +30,8 @@ linux:
 	mkdir -p ~/.ssh
 	ln -sf $(DOTFILES_DIR)/ssh_config ~/.ssh/config
 	ln -sf $(DOTFILES_DIR)/scripts ~/bin
+	mkdir -p ~/.config/nvim
+	ln -sf $(DOTFILES_DIR)/init.vim ~/.config/nvim
 
 clean:
 	rm -f ~/.RProfile

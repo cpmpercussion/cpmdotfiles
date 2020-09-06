@@ -30,12 +30,15 @@
            solarized-theme
            smex
            telephone-line
+           unicode-fonts
            yaml-mode
            ))
   (if (not (package-installed-p package))
       (package-install package)))
 
 (global-set-key (kbd "C-c p") 'list-packages)
+
+(global-prettify-symbols-mode +1) ;; prettify symbols
 
 ;; cross-platform setup
 (exec-path-from-shell-initialize)
@@ -53,6 +56,9 @@
   (define-key global-map (kbd "s-w") 'delete-frame)
   (define-key global-map (kbd "s-x") 'kill-region))
 
+;; Open init.el with C-x c
+(defun initel () (interactive) (switch-to-buffer (find-file-noselect "~/.emacs.d/init.el")))
+(global-set-key (kbd "C-x c") 'initel)
 
 ;; linux
 (defun charles-linux-setup ()
@@ -208,15 +214,6 @@
 ;; hide certain minor modes from mode line
 (setq eldoc-minor-mode-string "")
 
-;; pretty lambdas
-(add-hook 'prog-mode-hook
-          '(lambda ()
-             (font-lock-add-keywords
-              nil `(("(?\\(lambda\\>\\)"
-                     (0 (progn (compose-region (match-beginning 1) (match-end 1)
-                                               ,(make-char 'greek-iso8859-7 107))
-                               nil)))))))
-
 ;; solarized-dark theme
 (load-theme 'solarized-dark t)
 (setq solarized-distinct-fringe-background t)
@@ -226,6 +223,9 @@
 (set-face-attribute 'default nil :height base-face-height :family "Inconsolata")
 (set-face-attribute 'variable-pitch nil :height base-face-height :family "Lucida Grande")
 (require 'all-the-icons)
+
+(require 'unicode-fonts)
+(unicode-fonts-setup)
 
 ;; keybindings
 
@@ -320,12 +320,14 @@
 ; elisp
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
 
+
 ;; files and stuff
 
 ; neotree
 (require 'neotree)
 (global-set-key [f8] 'neotree-toggle)
 (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+(setq neo-smart-open t)
 
 ;; dired
 (setq dired-listing-switches "-alh")
@@ -401,17 +403,22 @@
 (add-to-list 'auto-mode-alist '(".*gitconfig$" . conf-unix-mode))
 (add-to-list 'auto-mode-alist '(".*gitignore$" . conf-unix-mode))
 
-;------------------------;
-;;; Python Programming ;;;
-;------------------------;
 
-;; -----------------------
-;; python.el configuration
-;; -----------------------
+;; Python Programming
+;; Enable Elpy for Python development
+;; https://elpy.readthedocs.io/en/latest/
+(setq elpy-rpc-python-command "python3")
+(elpy-enable)
+
+;; Run black on save
+(add-hook 'elpy-mode-hook (lambda ()
+  (add-hook 'before-save-hook 'elpy-black-fix-code nil t)))
+
+;; Set C-8 to format Python code
+(global-set-key (kbd "C-8") 'elpy-black-fix-code)
 
 ; from python.el
 (require 'python)
-
 (setq
  python-shell-interpreter "ipython"
  python-shell-interpreter-args (if (equal system-type 'darwin)
@@ -426,10 +433,6 @@
    "';'.join(module_completion('''%s'''))\n"
  python-shell-completion-string-code
    "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
-
-;; ------------------
-;; misc python config
-;; ------------------
 
 ;; pyflakes flymake integration
 ;; http://stackoverflow.com/a/1257306/347942
@@ -476,28 +479,14 @@
 (global-set-key (kbd "M-[") 'doc-prev)
 (global-set-key (kbd "M-]") 'doc-next)
 
-;;;;;;;;;
-;; abc ;;
-;;;;;;;;;
-
-(add-to-list 'auto-mode-alist '("\\.abc\\'"  . abc-mode))
-(add-to-list 'auto-mode-alist '("\\.abp\\'"  . abc-mode))
-
-;;;;;;;;;;;;;;;;;;;;;;
-;; multiple-cursors ;;
-;;;;;;;;;;;;;;;;;;;;;;
-
+;; multiple-cursors
 (require 'multiple-cursors)
-
 (global-set-key (kbd "<C-S-up>") 'mc/edit-lines)
 (global-set-key (kbd "<C-S-down>") 'mc/mark-all-like-this-dwim)
 (global-set-key (kbd "<C-S-right>") 'mc/mark-next-like-this)
 (global-set-key (kbd "<C-S-left>") 'mc/mark-previous-like-this)
 
-;;;;;;;;;;
-;; misc ;;
-;;;;;;;;;;
-
+;; misc
 (defun read-lines (fpath)
   "Return a list of lines of a file at at FPATH."
   (with-temp-buffer
@@ -551,9 +540,6 @@ Replaces default behaviour of `comment-dwim', when it inserts comment at the end
 (if (display-graphic-p)
     (toggle-frame-maximized))
 
-;;;;;;;;;;;;;;;;;;
-;; Scrolling    ;;
-;;;;;;;;;;;;;;;;;;
 ;; scroll one line at a time (less "jumpy" than defaults)
 (setq scroll-step 1)
 (setq scroll-conservatively 1000)

@@ -22,9 +22,9 @@
            ess
            exec-path-from-shell
            flx-ido
+           ido-completing-read+
            gist
            htmlize
-           ido-ubiquitous
            imenu-anywhere
            less-css-mode
            magit
@@ -38,8 +38,7 @@
            smex
            telephone-line
            yaml-mode
-           yasnippet
-           easy-jekyll))
+           yasnippet))
   (if (not (package-installed-p package))
       (package-install package)))
 
@@ -99,12 +98,17 @@
 ;;;;;;;;;;;;;;;;
 ;; smex & ido ;;
 ;;;;;;;;;;;;;;;;
+;; (require 'ido-completing-read+)
+;; (ido-ubiquitous-mode 1)
+
 (require 'flx-ido)
-(setq smex-save-file (concat user-emacs-directory ".smex-items"))
-(smex-initialize)
+(ido-mode 1)
+(ido-everywhere 1)
+(flx-ido-mode 1)
 
 (setq ido-enable-prefix nil
       ido-enable-flex-matching t
+      ido-use-faces nil
       ido-auto-merge-work-directories-length nil
       ido-create-new-buffer 'always
       ido-use-filename-at-point 'guess
@@ -112,22 +116,16 @@
       ido-handle-duplicate-virtual-buffers 2
       ido-max-prospects 10)
 
-(ido-mode 1)
-(ido-ubiquitous-mode 1)
-(flx-ido-mode 1)
+(setq smex-save-file (concat user-emacs-directory ".smex-items"))
+(smex-initialize)
 
 (global-set-key (kbd "M-x") 'smex)
 (global-set-key (kbd "C-c i") 'imenu-anywhere)
 
-;;;;;;;;;;;;;;;;;;;;;;;;
-;; garbage collection ;;
-;;;;;;;;;;;;;;;;;;;;;;;;
-
+;; garbage collection
 (setq gc-cons-threshold 50000000)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; display & appearance ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; display & appearance
 ;; visible bell workaround for el capitan
 (setq visible-bell nil)
 (setq ring-bell-function (lambda ()
@@ -222,11 +220,9 @@
 (define-key global-map (kbd "<f11>") 'toggle-frame-maximized)
 
 ;; hide certain minor modes from mode line
-
 (setq eldoc-minor-mode-string "")
 
 ;; pretty lambdas
-
 (add-hook 'prog-mode-hook
           '(lambda ()
              (font-lock-add-keywords
@@ -235,18 +231,12 @@
                                                ,(make-char 'greek-iso8859-7 107))
                                nil)))))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; solarized-dark theme ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;; solarized-dark theme
 (load-theme 'solarized-dark t)
 (setq solarized-distinct-fringe-background t)
 (setq solarized-high-contrast-mode-line t)
 
-;;;;;;;;;;;
-;; faces ;;
-;;;;;;;;;;;
-
+;; faces
 (set-face-attribute 'default nil :height base-face-height :family "Inconsolata")
 (set-face-attribute 'variable-pitch nil :height base-face-height :family "Lucida Grande")
 
@@ -270,7 +260,6 @@
 (global-set-key (kbd "s-}") 'enlarge-window-horizontally)
 
 ;; Mac OS X-like
-
 (global-set-key (kbd "s-z") 'undo)
 
 (global-set-key (kbd "<s-left>") 'move-beginning-of-line)
@@ -433,97 +422,97 @@
 
 ;; from https://gist.github.com/malk/4962126
 
-(defun point-is-inside-list ()
-  "Whether point is currently inside list or not."
-  (nth 1 (syntax-ppss)))
+;; (defun point-is-inside-list ()
+;;   "Whether point is currently inside list or not."
+;;   (nth 1 (syntax-ppss)))
 
-(defun point-is-inside-string ()
-  "Whether point is currently inside string or not."
-  (nth 3 (syntax-ppss)))
+;; (defun point-is-inside-string ()
+;;   "Whether point is currently inside string or not."
+;;   (nth 3 (syntax-ppss)))
 
-(defun point-is-inside-comment ()
-  "Whether point is currently inside a comment or not."
-  (nth 4 (syntax-ppss)))
+;; (defun point-is-inside-comment ()
+;;   "Whether point is currently inside a comment or not."
+;;   (nth 4 (syntax-ppss)))
 
-(defun paredit--is-at-opening-paren ()
-  (and (looking-at "\\s(")
-       (not (point-is-inside-string))
-       (not (point-is-inside-comment))))
+;; (defun paredit--is-at-opening-paren ()
+;;   (and (looking-at "\\s(")
+;;        (not (point-is-inside-string))
+;;        (not (point-is-inside-comment))))
 
-(defun paredit-skip-to-start-of-sexp-at-point ()
-  "Skips to start of current sexp."
-  (interactive)
-  (while (not (paredit--is-at-opening-paren))
-    (if (point-is-inside-string)
-        (paredit-backward-up)
-      (paredit-backward))))
+;; (defun paredit-skip-to-start-of-sexp-at-point ()
+;;   "Skips to start of current sexp."
+;;   (interactive)
+;;   (while (not (paredit--is-at-opening-paren))
+;;     (if (point-is-inside-string)
+;;         (paredit-backward-up)
+;;       (paredit-backward))))
 
-(defun paredit-duplicate-rest-of-closest-sexp ()
-  (interactive)
-  (cond
-   ((paredit--is-at-opening-paren)
-    (paredit-copy-sexps-as-kill)
-    (forward-sexp)
-    (paredit-newline)
-    (yank)
-    (exchange-point-and-mark))
-   ((point-is-inside-list)
-    (while (looking-at " ") (forward-char))
-    (if (not (= (point) (car (bounds-of-thing-at-point 'sexp))))
-        (progn (forward-sexp)
-               (while (looking-at " ") (forward-char))))
-    (let ((sexp-inside-end (- (paredit-next-up/down-point 1 1) 1)))
-      (kill-ring-save (point) sexp-inside-end)
-      (goto-char sexp-inside-end))
-    (paredit-newline)
-    (yank)
-    (exchange-point-and-mark))))
+;; (defun paredit-duplicate-rest-of-closest-sexp ()
+;;   (interactive)
+;;   (cond
+;;    ((paredit--is-at-opening-paren)
+;;     (paredit-copy-sexps-as-kill)
+;;     (forward-sexp)
+;;     (paredit-newline)
+;;     (yank)
+;;     (exchange-point-and-mark))
+;;    ((point-is-inside-list)
+;;     (while (looking-at " ") (forward-char))
+;;     (if (not (= (point) (car (bounds-of-thing-at-point 'sexp))))
+;;         (progn (forward-sexp)
+;;                (while (looking-at " ") (forward-char))))
+;;     (let ((sexp-inside-end (- (paredit-next-up/down-point 1 1) 1)))
+;;       (kill-ring-save (point) sexp-inside-end)
+;;       (goto-char sexp-inside-end))
+;;     (paredit-newline)
+;;     (yank)
+;;     (exchange-point-and-mark))))
 
-(defface paredit-paren-face
-  '((((class color) (background dark))
-     (:foreground "grey50"))
-    (((class color) (background light))
-     (:foreground "grey55")))
-  "Face for parentheses.  Taken from ESK.")
+;; (defface paredit-paren-face
+;;   '((((class color) (background dark))
+;;      (:foreground "grey50"))
+;;     (((class color) (background light))
+;;      (:foreground "grey55")))
+;;   "Face for parentheses.  Taken from ESK.")
 
-(defun charles-paredit-mode-hook ()
-  (define-key paredit-mode-map (kbd "<M-delete>") 'paredit-forward-kill-word)
-  (define-key paredit-mode-map (kbd "<M-backspace>") 'paredit-backward-kill-word)
-  (define-key paredit-mode-map (kbd "<s-left>") 'paredit-backward-up)
-  (define-key paredit-mode-map (kbd "<s-S-left>") 'paredit-backward-down)
-  (define-key paredit-mode-map (kbd "<s-right>") 'paredit-forward-up)
-  (define-key paredit-mode-map (kbd "<s-S-right>") 'paredit-forward-down)
-  (define-key paredit-mode-map (kbd "<M-S-up>") 'paredit-raise-sexp)
-  (define-key paredit-mode-map (kbd "<M-S-down>") 'paredit-wrap-sexp)
-  (define-key paredit-mode-map (kbd "<M-S-left>") 'paredit-convolute-sexp)
-  (define-key paredit-mode-map (kbd "<M-S-right>") 'transpose-sexps)
-  (define-key paredit-mode-map (kbd "<s-S-down>") 'paredit-duplicate-rest-of-closest-sexp))
+;; (defun charles-paredit-mode-hook ()
+;;   (define-key paredit-mode-map (kbd "<M-delete>") 'paredit-forward-kill-word)
+;;   (define-key paredit-mode-map (kbd "<M-backspace>") 'paredit-backward-kill-word)
+;;   (define-key paredit-mode-map (kbd "<s-left>") 'paredit-backward-up)
+;;   (define-key paredit-mode-map (kbd "<s-S-left>") 'paredit-backward-down)
+;;   (define-key paredit-mode-map (kbd "<s-right>") 'paredit-forward-up)
+;;   (define-key paredit-mode-map (kbd "<s-S-right>") 'paredit-forward-down)
+;;   (define-key paredit-mode-map (kbd "<M-S-up>") 'paredit-raise-sexp)
+;;   (define-key paredit-mode-map (kbd "<M-S-down>") 'paredit-wrap-sexp)
+;;   (define-key paredit-mode-map (kbd "<M-S-left>") 'paredit-convolute-sexp)
+;;   (define-key paredit-mode-map (kbd "<M-S-right>") 'transpose-sexps)
+;;   (define-key paredit-mode-map (kbd "<s-S-down>") 'paredit-duplicate-rest-of-closest-sexp))
 
-(add-hook 'paredit-mode-hook 'charles-paredit-mode-hook)
+;; (add-hook 'paredit-mode-hook 'charles-paredit-mode-hook)
 
-;; turn on paredit by default in all 'lispy' modes
+;; ;; turn on paredit by default in all 'lispy' modes
 
-(dolist (mode '(scheme emacs-lisp lisp clojure cider-repl clojurescript extempore))
-  (when (> (display-color-cells) 8)
-    (font-lock-add-keywords (intern (concat (symbol-name mode) "-mode"))
-                            '(("(\\|)" . 'paredit-paren-face))))
-  (add-hook (intern (concat (symbol-name mode) "-mode-hook"))
-            'paredit-mode))
+;; (dolist (mode '(scheme emacs-lisp lisp clojure cider-repl clojurescript extempore))
+;;   (when (> (display-color-cells) 8)
+;;     (font-lock-add-keywords (intern (concat (symbol-name mode) "-mode"))
+;;                             '(("(\\|)" . 'paredit-paren-face))))
+;;   (add-hook (intern (concat (symbol-name mode) "-mode-hook"))
+;;             'paredit-mode))
 
 ;; taken from
 ;; http://emacsredux.com/blog/2013/04/18/evaluate-emacs-lisp-in-the-minibuffer/
 
-(defun conditionally-enable-paredit-mode ()
-  "Enable `paredit-mode' in the minibuffer, during `eval-expression'."
-  (if (eq this-command 'eval-expression)
-      (paredit-mode 1)))
+;; (defun conditionally-enable-paredit-mode ()
+;;   "Enable `paredit-mode' in the minibuffer, during `eval-expression'."
+;;   (if (eq this-command 'eval-expression)
+;;       (paredit-mode 1)))
 
-(add-hook 'minibuffer-setup-hook 'conditionally-enable-paredit-mode)
+;; (add-hook 'minibuffer-setup-hook 'conditionally-enable-paredit-mode)
 
-(eval-after-load "paredit"
-  '(cl-nsubstitute-if '(paredit-mode " pe")
-                      (lambda (x) (equalp (car x) 'paredit-mode))
-                      minor-mode-alist))
+;; (eval-after-load "paredit"
+;;   '(cl-nsubstitute-if '(paredit-mode " pe")
+;;                       (lambda (x) (equalp (car x) 'paredit-mode))
+;;                       minor-mode-alist))
 
 ;;;;;;;;;;;;;;
 ;; markdown ;;
@@ -566,14 +555,13 @@
 
 ;; Jekyll
 
-(require `easy-jekyll)
-
-(setq easy-jekyll-basedir "~/Documents/src/cpm-homepage")
-(setq easy-jekyll-url "https://charlesmartin.com.au")
+;(require `easy-jekyll)
+;(setq easy-jekyll-basedir "~/Documents/src/cpm-homepage")
+;(setq easy-jekyll-url "https://charlesmartin.com.au")
 ; (setq easy-jekyll-sshdomain "blogdomain")
-(setq easy-jekyll-root "/")
-(setq easy-jekyll-previewtime "300")
-(define-key global-map (kbd "C-c C-e") 'easy-jekyll)
+;(setq easy-jekyll-root "/")
+;(setq easy-jekyll-previewtime "300")
+;(define-key global-map (kbd "C-c C-e") 'easy-jekyll)
 
 ;------------------------;
 ;;; Python Programming ;;;
@@ -656,35 +644,33 @@
 ;; yasnippet ;;
 ;;;;;;;;;;;;;;;
 
-(require 'yasnippet)
 
-(setq yas-prompt-functions '(yas-ido-prompt yas-no-prompt))
 
-(add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets")
-(yas-global-mode 1)
+;; (require 'yasnippet)
 
-(eval-after-load "yasnippet"
-  '(cl-nsubstitute-if '(yas-minor-mode "")
-                      (lambda (x) (equalp (car x) 'yas-minor-mode))
-                      minor-mode-alist))
+;; (setq yas-prompt-functions '(yas-ido-prompt yas-no-prompt))
 
-;;;;;;;;;;;;;;;;;;
-;; autocomplete ;;
-;;;;;;;;;;;;;;;;;;
+;; (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets")
+;; (yas-global-mode 1)
 
+;; (eval-after-load "yasnippet"
+;;   '(cl-nsubstitute-if '(yas-minor-mode "")
+;;                       (lambda (x) (equalp (car x) 'yas-minor-mode))
+;;                       minor-mode-alist))
+
+;; auto-complete
 ;; autocomplete needs to be set up after yasnippet
+;; (require 'auto-complete-config)
 
-(require 'auto-complete-config)
+;; ;; (ac-set-trigger-key "<tab>")
+;; (add-to-list 'ac-dictionary-directories (concat user-emacs-directory ".ac-dict"))
+;; (setq ac-auto-start 2)
+;; (ac-config-default)
 
-;; (ac-set-trigger-key "<tab>")
-(add-to-list 'ac-dictionary-directories (concat user-emacs-directory ".ac-dict"))
-(setq ac-auto-start 2)
-(ac-config-default)
-
-(eval-after-load "auto-complete"
-  '(cl-nsubstitute-if '(auto-complete-mode "")
-                      (lambda (x) (equalp (car x) 'auto-complete-mode))
-                      minor-mode-alist))
+;; (eval-after-load "auto-complete"
+;;   '(cl-nsubstitute-if '(auto-complete-mode "")
+;;                       (lambda (x) (equalp (car x) 'auto-complete-mode))
+;;                       minor-mode-alist))
 
 ;;;;;;;;;
 ;; abc ;;

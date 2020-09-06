@@ -14,39 +14,30 @@
 
 (dolist (package
          '(ag
-           all-the-icons
-           auctex
+           all-the-icons ; icons for neotree
+           auctex ; latex
            auto-complete           
-           elpy
-           epl
-           ess
+           elpy ; python
+           epl ; something about package.el not needed now?
            exec-path-from-shell
            flx-ido
            ido-completing-read+
-           gist
-           htmlize
            imenu-anywhere
-           less-css-mode
-           magit
            markdown-mode
            multiple-cursors
            neotree
-           paredit
            pandoc-mode
            solarized-theme
-           scss-mode
            smex
            telephone-line
            yaml-mode
-           yasnippet))
+           ))
   (if (not (package-installed-p package))
       (package-install package)))
 
 (global-set-key (kbd "C-c p") 'list-packages)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; cross-platform setup ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; cross-platform setup
 (exec-path-from-shell-initialize)
 
 (defun charles-setup-keybindings ()
@@ -89,15 +80,10 @@
 (cond ((equal system-type 'gnu/linux) (charles-linux-setup))
       ((equal system-type 'darwin) (charles-osx-setup)))
 
-;;;;;;;;;;;;;;;;;;;
-;; customisation ;;
-;;;;;;;;;;;;;;;;;;;
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (load custom-file t)
 
-;;;;;;;;;;;;;;;;
-;; smex & ido ;;
-;;;;;;;;;;;;;;;;
+;; flx/ido
 ;; (require 'ido-completing-read+)
 ;; (ido-ubiquitous-mode 1)
 
@@ -239,15 +225,11 @@
 ;; faces
 (set-face-attribute 'default nil :height base-face-height :family "Inconsolata")
 (set-face-attribute 'variable-pitch nil :height base-face-height :family "Lucida Grande")
-
 (require 'all-the-icons)
 
-;;;;;;;;;;;;;;;;;
-;; keybindings ;;
-;;;;;;;;;;;;;;;;;
+;; keybindings
 
 ;; handy shortcuts
-(global-set-key (kbd "<f5>") 'magit-status)
 (global-set-key (kbd "<f6>") 'compile)
 (global-set-key (kbd "C-c g") 'ag)
 (global-set-key (kbd "C-c u") 'find-dired)
@@ -270,10 +252,7 @@
 (global-set-key (kbd "<M-backspace>") 'backward-kill-word)
 (global-set-key (kbd "<s-backspace>") (lambda () (interactive) (kill-visual-line 0)))
 
-;;;;;;;;;;;;;;;
-;; powerline ;;
-;;;;;;;;;;;;;;;
-
+;; telephone-line
 (require 'telephone-line)
 (setq telephone-line-primary-left-separator 'telephone-line-gradient
       telephone-line-secondary-left-separator 'telephone-line-nil
@@ -283,10 +262,7 @@
       telephone-line-evil-use-short-tag t)
 (telephone-line-mode 1)
 
-;;;;;;;;;;;;
-;; eshell ;;
-;;;;;;;;;;;;
-
+;; eshell
 (setq eshell-aliases-file "~/.dotfiles/eshell-alias")
 (global-set-key (kbd "C-c s") 'eshell)
 
@@ -351,24 +327,11 @@
 (global-set-key [f8] 'neotree-toggle)
 (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
 
-;;;;;;;;;;;
-;; dired ;;
-;;;;;;;;;;;
-
+;; dired
 (setq dired-listing-switches "-alh")
 (setq dired-auto-revert-buffer t)
 
-;;;;;;;;;;;
-;; magit ;;
-;;;;;;;;;;;
-
-(setq vc-display-status nil)
-(setq magit-save-some-buffers nil)
-
-;;;;;;;;;;;;;;;;;;;;
-;; LaTeX & reftex ;;
-;;;;;;;;;;;;;;;;;;;;
-
+;; LaTeX & reftex
 (require 'latex)
 (require 'reftex)
 
@@ -416,108 +379,7 @@
 
 (add-hook 'LaTeX-mode-hook 'charles-latex-mode-hook)
 
-;;;;;;;;;;;;;
-;; paredit ;;
-;;;;;;;;;;;;;
-
-;; from https://gist.github.com/malk/4962126
-
-;; (defun point-is-inside-list ()
-;;   "Whether point is currently inside list or not."
-;;   (nth 1 (syntax-ppss)))
-
-;; (defun point-is-inside-string ()
-;;   "Whether point is currently inside string or not."
-;;   (nth 3 (syntax-ppss)))
-
-;; (defun point-is-inside-comment ()
-;;   "Whether point is currently inside a comment or not."
-;;   (nth 4 (syntax-ppss)))
-
-;; (defun paredit--is-at-opening-paren ()
-;;   (and (looking-at "\\s(")
-;;        (not (point-is-inside-string))
-;;        (not (point-is-inside-comment))))
-
-;; (defun paredit-skip-to-start-of-sexp-at-point ()
-;;   "Skips to start of current sexp."
-;;   (interactive)
-;;   (while (not (paredit--is-at-opening-paren))
-;;     (if (point-is-inside-string)
-;;         (paredit-backward-up)
-;;       (paredit-backward))))
-
-;; (defun paredit-duplicate-rest-of-closest-sexp ()
-;;   (interactive)
-;;   (cond
-;;    ((paredit--is-at-opening-paren)
-;;     (paredit-copy-sexps-as-kill)
-;;     (forward-sexp)
-;;     (paredit-newline)
-;;     (yank)
-;;     (exchange-point-and-mark))
-;;    ((point-is-inside-list)
-;;     (while (looking-at " ") (forward-char))
-;;     (if (not (= (point) (car (bounds-of-thing-at-point 'sexp))))
-;;         (progn (forward-sexp)
-;;                (while (looking-at " ") (forward-char))))
-;;     (let ((sexp-inside-end (- (paredit-next-up/down-point 1 1) 1)))
-;;       (kill-ring-save (point) sexp-inside-end)
-;;       (goto-char sexp-inside-end))
-;;     (paredit-newline)
-;;     (yank)
-;;     (exchange-point-and-mark))))
-
-;; (defface paredit-paren-face
-;;   '((((class color) (background dark))
-;;      (:foreground "grey50"))
-;;     (((class color) (background light))
-;;      (:foreground "grey55")))
-;;   "Face for parentheses.  Taken from ESK.")
-
-;; (defun charles-paredit-mode-hook ()
-;;   (define-key paredit-mode-map (kbd "<M-delete>") 'paredit-forward-kill-word)
-;;   (define-key paredit-mode-map (kbd "<M-backspace>") 'paredit-backward-kill-word)
-;;   (define-key paredit-mode-map (kbd "<s-left>") 'paredit-backward-up)
-;;   (define-key paredit-mode-map (kbd "<s-S-left>") 'paredit-backward-down)
-;;   (define-key paredit-mode-map (kbd "<s-right>") 'paredit-forward-up)
-;;   (define-key paredit-mode-map (kbd "<s-S-right>") 'paredit-forward-down)
-;;   (define-key paredit-mode-map (kbd "<M-S-up>") 'paredit-raise-sexp)
-;;   (define-key paredit-mode-map (kbd "<M-S-down>") 'paredit-wrap-sexp)
-;;   (define-key paredit-mode-map (kbd "<M-S-left>") 'paredit-convolute-sexp)
-;;   (define-key paredit-mode-map (kbd "<M-S-right>") 'transpose-sexps)
-;;   (define-key paredit-mode-map (kbd "<s-S-down>") 'paredit-duplicate-rest-of-closest-sexp))
-
-;; (add-hook 'paredit-mode-hook 'charles-paredit-mode-hook)
-
-;; ;; turn on paredit by default in all 'lispy' modes
-
-;; (dolist (mode '(scheme emacs-lisp lisp clojure cider-repl clojurescript extempore))
-;;   (when (> (display-color-cells) 8)
-;;     (font-lock-add-keywords (intern (concat (symbol-name mode) "-mode"))
-;;                             '(("(\\|)" . 'paredit-paren-face))))
-;;   (add-hook (intern (concat (symbol-name mode) "-mode-hook"))
-;;             'paredit-mode))
-
-;; taken from
-;; http://emacsredux.com/blog/2013/04/18/evaluate-emacs-lisp-in-the-minibuffer/
-
-;; (defun conditionally-enable-paredit-mode ()
-;;   "Enable `paredit-mode' in the minibuffer, during `eval-expression'."
-;;   (if (eq this-command 'eval-expression)
-;;       (paredit-mode 1)))
-
-;; (add-hook 'minibuffer-setup-hook 'conditionally-enable-paredit-mode)
-
-;; (eval-after-load "paredit"
-;;   '(cl-nsubstitute-if '(paredit-mode " pe")
-;;                       (lambda (x) (equalp (car x) 'paredit-mode))
-;;                       minor-mode-alist))
-
-;;;;;;;;;;;;;;
-;; markdown ;;
-;;;;;;;;;;;;;;
-
+;; markdown
 (add-to-list 'auto-mode-alist '("\\.md" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.markdown" . markdown-mode))
 
@@ -532,36 +394,12 @@
 (add-hook 'markdown-mode-hook 'turn-off-auto-fill)
 (add-hook 'markdown-mode-hook 'pandoc-mode)
 
-;;;;;;;;;;
-;; yaml ;;
-;;;;;;;;;;
-
+;; yaml
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
-;;;;;;;;;
-;; git ;;
-;;;;;;;;;
-
+;; git
 (add-to-list 'auto-mode-alist '(".*gitconfig$" . conf-unix-mode))
 (add-to-list 'auto-mode-alist '(".*gitignore$" . conf-unix-mode))
-
-;;;;;;;
-;; R ;;
-;;;;;;;
-
-(require 'ess-site)
-(add-to-list 'auto-mode-alist '("\\.r$" . R-mode))
-(add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
-
-;; Jekyll
-
-;(require `easy-jekyll)
-;(setq easy-jekyll-basedir "~/Documents/src/cpm-homepage")
-;(setq easy-jekyll-url "https://charlesmartin.com.au")
-; (setq easy-jekyll-sshdomain "blogdomain")
-;(setq easy-jekyll-root "/")
-;(setq easy-jekyll-previewtime "300")
-;(define-key global-map (kbd "C-c C-e") 'easy-jekyll)
 
 ;------------------------;
 ;;; Python Programming ;;;
@@ -638,40 +476,6 @@
 (global-set-key (kbd "M-[") 'doc-prev)
 (global-set-key (kbd "M-]") 'doc-next)
 
-
-
-;;;;;;;;;;;;;;;
-;; yasnippet ;;
-;;;;;;;;;;;;;;;
-
-
-
-;; (require 'yasnippet)
-
-;; (setq yas-prompt-functions '(yas-ido-prompt yas-no-prompt))
-
-;; (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets")
-;; (yas-global-mode 1)
-
-;; (eval-after-load "yasnippet"
-;;   '(cl-nsubstitute-if '(yas-minor-mode "")
-;;                       (lambda (x) (equalp (car x) 'yas-minor-mode))
-;;                       minor-mode-alist))
-
-;; auto-complete
-;; autocomplete needs to be set up after yasnippet
-;; (require 'auto-complete-config)
-
-;; ;; (ac-set-trigger-key "<tab>")
-;; (add-to-list 'ac-dictionary-directories (concat user-emacs-directory ".ac-dict"))
-;; (setq ac-auto-start 2)
-;; (ac-config-default)
-
-;; (eval-after-load "auto-complete"
-;;   '(cl-nsubstitute-if '(auto-complete-mode "")
-;;                       (lambda (x) (equalp (car x) 'auto-complete-mode))
-;;                       minor-mode-alist))
-
 ;;;;;;;;;
 ;; abc ;;
 ;;;;;;;;;
@@ -741,16 +545,6 @@ Replaces default behaviour of `comment-dwim', when it inserts comment at the end
 
 (global-set-key (kbd "C-c d") 'duplicate-line)
 (global-set-key (kbd "C-c b") 'comment-box)
-
-;;;;;;;;;;;;;;;;;;
-;; emacs server ;;
-;;;;;;;;;;;;;;;;;;
-
-(require 'server)
-;; (setq server-name "charles")
-
-(unless (server-running-p)
-  (server-start))
 
 ;; toggle fullscreen
 

@@ -229,6 +229,11 @@
 
 ;; keybindings
 
+;; windmove
+(when (fboundp 'windmove-default-keybindings)
+  (windmove-default-keybindings))
+
+
 ;; handy shortcuts
 (global-set-key (kbd "<f6>") 'compile)
 (global-set-key (kbd "C-c g") 'ag)

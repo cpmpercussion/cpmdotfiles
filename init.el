@@ -1,16 +1,10 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;: charles martin's .emacs ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;
-;; elpa ;;
-;;;;;;;;;;
+;; charles' init.el
 
 (require 'package)
 (setq package-archives
       '(("gnu" . "https://elpa.gnu.org/packages/")
         ("marmalade" . "https://marmalade-repo.org/packages/")
-        ("melpa" . "https://melpa.milkbox.net/packages/")))
+        ("melpa" . "https://melpa.org/packages/")))
 
 (unless package--initialized
   (package-initialize))
@@ -20,51 +14,34 @@
 
 (dolist (package
          '(ag
-           all-the-icons
-           auctex
+           all-the-icons ; icons for neotree
+           auctex ; latex
            auto-complete           
-           elpy
-           epl
-           ess
+           elpy ; python
+           epl ; something about package.el not needed now?
            exec-path-from-shell
            flx-ido
-           gist
-           htmlize
-           ido-ubiquitous
+           ido-completing-read+
            imenu-anywhere
-           less-css-mode
-           magit
            markdown-mode
            multiple-cursors
            neotree
-           paredit
            pandoc-mode
            solarized-theme
-           scss-mode
            smex
            telephone-line
+           unicode-fonts
            yaml-mode
-           yasnippet))
+           ))
   (if (not (package-installed-p package))
       (package-install package)))
 
 (global-set-key (kbd "C-c p") 'list-packages)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; cross-platform setup ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;
+(global-prettify-symbols-mode +1) ;; prettify symbols
+
+;; cross-platform setup
 (exec-path-from-shell-initialize)
-;; linux
-
-(defun charles-linux-setup ()
-  (set-frame-font "Inconsolata-11")
-  (setq base-face-height 110)
-  (setq frame-maximization-mode 'maximized)
-  (charles-setup-keybindings))
-
-;; OSX
-(defun spotlight-locate-make-command-line (search-string)
-  (list "mdfind" "-interpret" search-string))
 
 (defun charles-setup-keybindings ()
   (define-key global-map (kbd "s-a") 'mark-whole-buffer)
@@ -79,6 +56,21 @@
   (define-key global-map (kbd "s-w") 'delete-frame)
   (define-key global-map (kbd "s-x") 'kill-region))
 
+;; Open init.el with C-x c
+(defun initel () (interactive) (switch-to-buffer (find-file-noselect "~/.emacs.d/init.el")))
+(global-set-key (kbd "C-x c") 'initel)
+
+;; linux
+(defun charles-linux-setup ()
+  (set-frame-font "Inconsolata-11")
+  (setq base-face-height 110)
+  (setq frame-maximization-mode 'maximized)
+  (charles-setup-keybindings))
+
+;; OSX
+(defun spotlight-locate-make-command-line (search-string)
+  (list "mdfind" "-interpret" search-string))
+
 (defun charles-osx-setup ()
   (setq base-face-height 160)
   (setq mac-option-modifier 'meta)
@@ -89,27 +81,26 @@
   (setq source-directory "/Library/Caches/Homebrew/emacs--git")
   (setq dired-guess-shell-alist-user '(("\\.pdf\\'" "open")))
   (setq frame-maximization-mode 'fullscreen)
-  ;; for railwaycat emacs-mac
   (charles-setup-keybindings))
 
 (cond ((equal system-type 'gnu/linux) (charles-linux-setup))
       ((equal system-type 'darwin) (charles-osx-setup)))
 
-;;;;;;;;;;;;;;;;;;;
-;; customisation ;;
-;;;;;;;;;;;;;;;;;;;
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (load custom-file t)
 
-;;;;;;;;;;;;;;;;
-;; smex & ido ;;
-;;;;;;;;;;;;;;;;
+;; flx/ido
+;; (require 'ido-completing-read+)
+;; (ido-ubiquitous-mode 1)
+
 (require 'flx-ido)
-(setq smex-save-file (concat user-emacs-directory ".smex-items"))
-(smex-initialize)
+(ido-mode 1)
+(ido-everywhere 1)
+(flx-ido-mode 1)
 
 (setq ido-enable-prefix nil
       ido-enable-flex-matching t
+      ido-use-faces nil
       ido-auto-merge-work-directories-length nil
       ido-create-new-buffer 'always
       ido-use-filename-at-point 'guess
@@ -117,28 +108,21 @@
       ido-handle-duplicate-virtual-buffers 2
       ido-max-prospects 10)
 
-(ido-mode 1)
-(ido-ubiquitous-mode 1)
-(flx-ido-mode 1)
+(setq smex-save-file (concat user-emacs-directory ".smex-items"))
+(smex-initialize)
 
 (global-set-key (kbd "M-x") 'smex)
 (global-set-key (kbd "C-c i") 'imenu-anywhere)
 
-;;;;;;;;;;;;;;;;;;;;;;;;
-;; garbage collection ;;
-;;;;;;;;;;;;;;;;;;;;;;;;
-
+;; garbage collection
 (setq gc-cons-threshold 50000000)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; display & appearance ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; display & appearance
 ;; visible bell workaround for el capitan
 (setq visible-bell nil)
 (setq ring-bell-function (lambda ()
-(invert-face 'mode-line)
-(run-with-timer 0.1 nil 'invert-face 'mode-line)))
-
+                           (invert-face 'mode-line)
+                           (run-with-timer 0.1 nil 'invert-face 'mode-line)))
 (setq inhibit-startup-message t)
 (setq color-theme-is-global t)
 (setq bidi-display-reordering nil)
@@ -159,6 +143,7 @@
 (show-paren-mode 1)
 (column-number-mode 1)
 (hl-line-mode t)
+(global-display-line-numbers-mode)
 
 ;; show time and battery status in mode line
 (display-time-mode 1)
@@ -227,57 +212,34 @@
 (define-key global-map (kbd "<f11>") 'toggle-frame-maximized)
 
 ;; hide certain minor modes from mode line
-
 (setq eldoc-minor-mode-string "")
 
-;; pretty lambdas
-
-(add-hook 'prog-mode-hook
-          '(lambda ()
-             (font-lock-add-keywords
-              nil `(("(?\\(lambda\\>\\)"
-                     (0 (progn (compose-region (match-beginning 1) (match-end 1)
-                                               ,(make-char 'greek-iso8859-7 107))
-                               nil)))))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; solarized-dark theme ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;; solarized-dark theme
 (load-theme 'solarized-dark t)
 (setq solarized-distinct-fringe-background t)
 (setq solarized-high-contrast-mode-line t)
 
-;; (add-to-list 'custom-theme-load-path "~/.emacs.d/emacs-color-theme-solarized/")
-;; (if (display-graphic-p)
-;;     (progn (load-theme 'solarized t)
-;;            (add-to-list 'default-frame-alist
-;;                         '(background-mode . dark))
-;;            (set-cursor-color "white")))
-
-;;;;;;;;;;;
-;; faces ;;
-;;;;;;;;;;;
-
+;; faces
 (set-face-attribute 'default nil :height base-face-height :family "Inconsolata")
 (set-face-attribute 'variable-pitch nil :height base-face-height :family "Lucida Grande")
-
 (require 'all-the-icons)
 
+(require 'unicode-fonts)
+(unicode-fonts-setup)
 
-;;;;;;;;;;;;;;;;;
-;; keybindings ;;
-;;;;;;;;;;;;;;;;;
+;; keybindings
+
+;; windmove
+(when (fboundp 'windmove-default-keybindings)
+  (windmove-default-keybindings))
+
 
 ;; handy shortcuts
-
-(global-set-key (kbd "<f5>") 'magit-status)
 (global-set-key (kbd "<f6>") 'compile)
 (global-set-key (kbd "C-c g") 'ag)
 (global-set-key (kbd "C-c u") 'find-dired)
 
 ;; window navigation
-
 (global-set-key (kbd "s-[") '(lambda () (interactive) (other-window -1)))
 (global-set-key (kbd "s-]") 'other-window)
 
@@ -285,7 +247,6 @@
 (global-set-key (kbd "s-}") 'enlarge-window-horizontally)
 
 ;; Mac OS X-like
-
 (global-set-key (kbd "s-z") 'undo)
 
 (global-set-key (kbd "<s-left>") 'move-beginning-of-line)
@@ -296,10 +257,7 @@
 (global-set-key (kbd "<M-backspace>") 'backward-kill-word)
 (global-set-key (kbd "<s-backspace>") (lambda () (interactive) (kill-visual-line 0)))
 
-;;;;;;;;;;;;;;;
-;; powerline ;;
-;;;;;;;;;;;;;;;
-
+;; telephone-line
 (require 'telephone-line)
 (setq telephone-line-primary-left-separator 'telephone-line-gradient
       telephone-line-secondary-left-separator 'telephone-line-nil
@@ -309,60 +267,7 @@
       telephone-line-evil-use-short-tag t)
 (telephone-line-mode 1)
 
-;(require 'powerline)
-;(setq powerline-default-separator 'slant)
-;(setq powerline-height 30)
-;(powerline-default-theme)
-
-;; (defun powerline-charles-theme ()
-;;   "Charles' powerline theme, based on \\[powerline-default-theme]"
-;;   (interactive)
-;;   (setq-default mode-line-format
-;;                 '("%e"
-;;                   (:eval
-;;                    (let* ((active (powerline-selected-window-active))
-;;                           (mode-line (if active 'mode-line 'mode-line-inactive))
-;;                           (face1 (if active 'powerline-active1 'powerline-inactive1))
-;;                           (face2 (if active 'powerline-active2 'powerline-inactive2))
-;;                           (separator-left (intern (format "powerline-%s-%s"
-;;                                                           powerline-default-separator
-;;                                                           (car powerline-default-separator-dir))))
-;;                           (separator-right (intern (format "powerline-%s-%s"
-;;                                                            powerline-default-separator
-;;                                                            (cdr powerline-default-separator-dir))))
-;;                           (lhs (list (powerline-raw "%*" nil 'l)
-;;                                      (powerline-buffer-id nil 'l)
-;;                                      (when (and (boundp 'which-func-mode) which-func-mode)
-;;                                        (powerline-raw which-func-format nil 'l))
-;;                                      (powerline-raw " ")
-;;                                      (funcall separator-left mode-line face1)
-;;                                      (when (boundp 'erc-modified-channels-object)
-;;                                        (powerline-raw erc-modified-channels-object face1 'l))
-;;                                      (powerline-major-mode face1 'l)
-;;                                      (powerline-process face1)
-;;                                      (powerline-minor-modes face1 'l)
-;;                                      (powerline-narrow face1 'l)
-;;                                      (powerline-raw " " face1)
-;;                                      (funcall separator-left face1 face2)))
-;;                           (rhs (list (powerline-raw global-mode-string face2 'r)
-;;                                      (funcall separator-right face2 face1)
-;;                                      (powerline-raw "%4l" face1 'l)
-;;                                      (powerline-raw ":" face1 'l)
-;;                                      (powerline-raw "%3c" face1 'r)
-;;                                      (funcall separator-right face1 mode-line)
-;;                                      (powerline-raw " ")
-;;                                      (powerline-raw "%6p" nil 'r)
-;;                                      (powerline-hud face2 face1))))
-;;                      (concat (powerline-render lhs)
-;;                              (powerline-fill face2 (powerline-width rhs))
-;;                              (powerline-render rhs)))))))
-
-;(powerline-charles-theme)
-
-;;;;;;;;;;;;
-;; eshell ;;
-;;;;;;;;;;;;
-
+;; eshell
 (setq eshell-aliases-file "~/.dotfiles/eshell-alias")
 (global-set-key (kbd "C-c s") 'eshell)
 
@@ -417,38 +322,23 @@
                  (string-match "^[^.]+" hostname)
                  (match-end 0)))))
 
-;;;;;;;;;;;
-;; elisp ;;
-;;;;;;;;;;;
-
+; elisp
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
 
 
+;; files and stuff
 
-                                        ; neotree
-
+; neotree
 (require 'neotree)
 (global-set-key [f8] 'neotree-toggle)
 (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+(setq neo-smart-open t)
 
-;;;;;;;;;;;
-;; dired ;;
-;;;;;;;;;;;
-
+;; dired
 (setq dired-listing-switches "-alh")
 (setq dired-auto-revert-buffer t)
 
-;;;;;;;;;;;
-;; magit ;;
-;;;;;;;;;;;
-
-(setq vc-display-status nil)
-(setq magit-save-some-buffers nil)
-
-;;;;;;;;;;;;;;;;;;;;
-;; LaTeX & reftex ;;
-;;;;;;;;;;;;;;;;;;;;
-
+;; LaTeX & reftex
 (require 'latex)
 (require 'reftex)
 
@@ -496,108 +386,7 @@
 
 (add-hook 'LaTeX-mode-hook 'charles-latex-mode-hook)
 
-;;;;;;;;;;;;;
-;; paredit ;;
-;;;;;;;;;;;;;
-
-;; from https://gist.github.com/malk/4962126
-
-(defun point-is-inside-list ()
-  "Whether point is currently inside list or not."
-  (nth 1 (syntax-ppss)))
-
-(defun point-is-inside-string ()
-  "Whether point is currently inside string or not."
-  (nth 3 (syntax-ppss)))
-
-(defun point-is-inside-comment ()
-  "Whether point is currently inside a comment or not."
-  (nth 4 (syntax-ppss)))
-
-(defun paredit--is-at-opening-paren ()
-  (and (looking-at "\\s(")
-       (not (point-is-inside-string))
-       (not (point-is-inside-comment))))
-
-(defun paredit-skip-to-start-of-sexp-at-point ()
-  "Skips to start of current sexp."
-  (interactive)
-  (while (not (paredit--is-at-opening-paren))
-    (if (point-is-inside-string)
-        (paredit-backward-up)
-      (paredit-backward))))
-
-(defun paredit-duplicate-rest-of-closest-sexp ()
-  (interactive)
-  (cond
-   ((paredit--is-at-opening-paren)
-    (paredit-copy-sexps-as-kill)
-    (forward-sexp)
-    (paredit-newline)
-    (yank)
-    (exchange-point-and-mark))
-   ((point-is-inside-list)
-    (while (looking-at " ") (forward-char))
-    (if (not (= (point) (car (bounds-of-thing-at-point 'sexp))))
-        (progn (forward-sexp)
-               (while (looking-at " ") (forward-char))))
-    (let ((sexp-inside-end (- (paredit-next-up/down-point 1 1) 1)))
-      (kill-ring-save (point) sexp-inside-end)
-      (goto-char sexp-inside-end))
-    (paredit-newline)
-    (yank)
-    (exchange-point-and-mark))))
-
-(defface paredit-paren-face
-  '((((class color) (background dark))
-     (:foreground "grey50"))
-    (((class color) (background light))
-     (:foreground "grey55")))
-  "Face for parentheses.  Taken from ESK.")
-
-(defun charles-paredit-mode-hook ()
-  (define-key paredit-mode-map (kbd "<M-delete>") 'paredit-forward-kill-word)
-  (define-key paredit-mode-map (kbd "<M-backspace>") 'paredit-backward-kill-word)
-  (define-key paredit-mode-map (kbd "<s-left>") 'paredit-backward-up)
-  (define-key paredit-mode-map (kbd "<s-S-left>") 'paredit-backward-down)
-  (define-key paredit-mode-map (kbd "<s-right>") 'paredit-forward-up)
-  (define-key paredit-mode-map (kbd "<s-S-right>") 'paredit-forward-down)
-  (define-key paredit-mode-map (kbd "<M-S-up>") 'paredit-raise-sexp)
-  (define-key paredit-mode-map (kbd "<M-S-down>") 'paredit-wrap-sexp)
-  (define-key paredit-mode-map (kbd "<M-S-left>") 'paredit-convolute-sexp)
-  (define-key paredit-mode-map (kbd "<M-S-right>") 'transpose-sexps)
-  (define-key paredit-mode-map (kbd "<s-S-down>") 'paredit-duplicate-rest-of-closest-sexp))
-
-(add-hook 'paredit-mode-hook 'charles-paredit-mode-hook)
-
-;; turn on paredit by default in all 'lispy' modes
-
-(dolist (mode '(scheme emacs-lisp lisp clojure cider-repl clojurescript extempore))
-  (when (> (display-color-cells) 8)
-    (font-lock-add-keywords (intern (concat (symbol-name mode) "-mode"))
-                            '(("(\\|)" . 'paredit-paren-face))))
-  (add-hook (intern (concat (symbol-name mode) "-mode-hook"))
-            'paredit-mode))
-
-;; taken from
-;; http://emacsredux.com/blog/2013/04/18/evaluate-emacs-lisp-in-the-minibuffer/
-
-(defun conditionally-enable-paredit-mode ()
-  "Enable `paredit-mode' in the minibuffer, during `eval-expression'."
-  (if (eq this-command 'eval-expression)
-      (paredit-mode 1)))
-
-(add-hook 'minibuffer-setup-hook 'conditionally-enable-paredit-mode)
-
-(eval-after-load "paredit"
-  '(cl-nsubstitute-if '(paredit-mode " pe")
-                      (lambda (x) (equalp (car x) 'paredit-mode))
-                      minor-mode-alist))
-
-;;;;;;;;;;;;;;
-;; markdown ;;
-;;;;;;;;;;;;;;
-
+;; markdown
 (add-to-list 'auto-mode-alist '("\\.md" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.markdown" . markdown-mode))
 
@@ -612,39 +401,29 @@
 (add-hook 'markdown-mode-hook 'turn-off-auto-fill)
 (add-hook 'markdown-mode-hook 'pandoc-mode)
 
-;;;;;;;;;;
-;; yaml ;;
-;;;;;;;;;;
-
+;; yaml
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
-;;;;;;;;;
-;; git ;;
-;;;;;;;;;
-
+;; git
 (add-to-list 'auto-mode-alist '(".*gitconfig$" . conf-unix-mode))
 (add-to-list 'auto-mode-alist '(".*gitignore$" . conf-unix-mode))
 
-;;;;;;;
-;; R ;;
-;;;;;;;
 
-(require 'ess-site)
+;; Python Programming
+;; Enable Elpy for Python development
+;; https://elpy.readthedocs.io/en/latest/
+(setq elpy-rpc-python-command "python3")
+(elpy-enable)
 
-(add-to-list 'auto-mode-alist '("\\.r$" . R-mode))
-(add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
+;; Run black on save
+(add-hook 'elpy-mode-hook (lambda ()
+  (add-hook 'before-save-hook 'elpy-black-fix-code nil t)))
 
-;------------------------;
-;;; Python Programming ;;;
-;------------------------;
-
-;; -----------------------
-;; python.el configuration
-;; -----------------------
+;; Set C-8 to format Python code
+(global-set-key (kbd "C-8") 'elpy-black-fix-code)
 
 ; from python.el
 (require 'python)
-
 (setq
  python-shell-interpreter "ipython"
  python-shell-interpreter-args (if (equal system-type 'darwin)
@@ -659,10 +438,6 @@
    "';'.join(module_completion('''%s'''))\n"
  python-shell-completion-string-code
    "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
-
-;; ------------------
-;; misc python config
-;; ------------------
 
 ;; pyflakes flymake integration
 ;; http://stackoverflow.com/a/1257306/347942
@@ -709,64 +484,14 @@
 (global-set-key (kbd "M-[") 'doc-prev)
 (global-set-key (kbd "M-]") 'doc-next)
 
-
-
-;;;;;;;;;;;;;;;
-;; yasnippet ;;
-;;;;;;;;;;;;;;;
-
-(require 'yasnippet)
-
-(setq yas-prompt-functions '(yas-ido-prompt yas-no-prompt))
-
-(add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets")
-(yas-global-mode 1)
-
-(eval-after-load "yasnippet"
-  '(cl-nsubstitute-if '(yas-minor-mode "")
-                      (lambda (x) (equalp (car x) 'yas-minor-mode))
-                      minor-mode-alist))
-
-;;;;;;;;;;;;;;;;;;
-;; autocomplete ;;
-;;;;;;;;;;;;;;;;;;
-
-;; autocomplete needs to be set up after yasnippet
-
-(require 'auto-complete-config)
-
-;; (ac-set-trigger-key "<tab>")
-(add-to-list 'ac-dictionary-directories (concat user-emacs-directory ".ac-dict"))
-(setq ac-auto-start 2)
-(ac-config-default)
-
-(eval-after-load "auto-complete"
-  '(cl-nsubstitute-if '(auto-complete-mode "")
-                      (lambda (x) (equalp (car x) 'auto-complete-mode))
-                      minor-mode-alist))
-
-;;;;;;;;;
-;; abc ;;
-;;;;;;;;;
-
-(add-to-list 'auto-mode-alist '("\\.abc\\'"  . abc-mode))
-(add-to-list 'auto-mode-alist '("\\.abp\\'"  . abc-mode))
-
-;;;;;;;;;;;;;;;;;;;;;;
-;; multiple-cursors ;;
-;;;;;;;;;;;;;;;;;;;;;;
-
+;; multiple-cursors
 (require 'multiple-cursors)
-
 (global-set-key (kbd "<C-S-up>") 'mc/edit-lines)
 (global-set-key (kbd "<C-S-down>") 'mc/mark-all-like-this-dwim)
 (global-set-key (kbd "<C-S-right>") 'mc/mark-next-like-this)
 (global-set-key (kbd "<C-S-left>") 'mc/mark-previous-like-this)
 
-;;;;;;;;;;
-;; misc ;;
-;;;;;;;;;;
-
+;; misc
 (defun read-lines (fpath)
   "Return a list of lines of a file at at FPATH."
   (with-temp-buffer
@@ -815,24 +540,11 @@ Replaces default behaviour of `comment-dwim', when it inserts comment at the end
 (global-set-key (kbd "C-c d") 'duplicate-line)
 (global-set-key (kbd "C-c b") 'comment-box)
 
-;;;;;;;;;;;;;;;;;;
-;; emacs server ;;
-;;;;;;;;;;;;;;;;;;
-
-(require 'server)
-;; (setq server-name "charles")
-
-(unless (server-running-p)
-  (server-start))
-
 ;; toggle fullscreen
 
 (if (display-graphic-p)
     (toggle-frame-maximized))
 
-;;;;;;;;;;;;;;;;;;
-;; Scrolling    ;;
-;;;;;;;;;;;;;;;;;;
 ;; scroll one line at a time (less "jumpy" than defaults)
 (setq scroll-step 1)
 (setq scroll-conservatively 1000)

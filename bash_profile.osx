@@ -1,8 +1,11 @@
 # Exports
 export PATH="/Users/charles/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/X11/bin:/Library/TeX/texbin"
 export EDITOR="emacsclient --alternate-editor=emacs --no-wait"
+export LIBRARY_PATH=$LIBRARY_PATH:/usr/local/opt/openssl/lib/
 
-# PyEnv Stuff
+### Adacore Gnat
+export PATH="/users/charles/opt/GNAT/2019/bin:$PATH"
+
 
 ### Gems
 export PATH="/Users/charles/.gem/ruby/2.4.0/bin:$PATH"
@@ -12,8 +15,8 @@ export BIBINPUTS=~/Dropbox/writing/2013ComputerMusic.bib:$BIBINPUTS
 
 ## ANU VPN
 alias anuvpn="sudo openconnect anuvpn.anu.edu.au --authgroup=ANU --user=u4110680@CECS"
-alias plasticpal="ssh cecs-043651.cecs.anu.edu.au"
-alias paranoidandroid="ssh cecs-048944.cecs.anu.edu.au"
+alias plasticpal="ssh -J cmartin@cpu.cecs.anu.edu.au charles@cecs-043651.cecs.anu.edu.au"
+alias paranoidandroid="ssh -J cmartin@cpu.cecs.anu.edu.au charles@cecs-048944.cecs.anu.edu.au"
 
 # IP addresses
 alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
@@ -116,10 +119,5 @@ complete -o "nospace" -W "Contacts Calendar Dock Finder Mail Safari iTunes Syste
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
 
-# 
+# Poetry
 export PATH="$HOME/.poetry/bin:$PATH"
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-if command -v pyenv 1>/dev/null 2>&1; then
-  eval "$(pyenv init -)"
-fi

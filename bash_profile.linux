@@ -22,6 +22,11 @@ LEIN_FAST_TRAMPOLINE=y
 export LEIN_FAST_TRAMPOLINE
 alias cljsbuild="lein trampoline cljsbuild $@"
 
+## ANU VPN
+alias anuvpn="sudo openconnect anuvpn.anu.edu.au --authgroup=ANU --user=u4110680@CECS"
+alias plasticpal="ssh -J cmartin@cpu.cecs.anu.edu.au charles@cecs-043651.cecs.anu.edu.au"
+alias paranoidandroid="ssh -J cmartin@cpu.cecs.anu.edu.au charles@cecs-048944.cecs.anu.edu.au”
+
 # List all files colorized in long format, including dot files
 alias la="ls -Gla"
 
@@ -57,13 +62,10 @@ alias hide="defaults write com.apple.Finder AppleShowAllFiles -bool false && kil
 alias hidedesktop="defaults write com.apple.finder CreateDesktop -bool false && killall Finder"
 alias showdesktop="defaults write com.apple.finder CreateDesktop -bool true && killall Finder"
 
-# URL-encode strings
-alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);"'
-
-
 # Testing for CUDA and Tensorflow in Emacs
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64"
 export CUDA_HOME=/usr/local/cuda
+export CUDA_CACHE_MAXSIZE=2147483648
 # Local Variables:
 # mode: sh
 # End:
